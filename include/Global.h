@@ -1,22 +1,74 @@
 #pragma once
 #include <SDL.h>
+#include <algorithm>
 #include <iostream>
+#include <vector>
+#include <array>
+#include <bitset>
+#include <memory>
 
 namespace Global
 {
-    int ScreenFlags = SDL_WINDOW_BORDERLESS;
-    namespace Game{
+#ifdef NDEBUG
+// Debugging information is enabled
+    const bool DEBUG = true;
+#else
+    const bool DEBUG = false;
+#endif
+
+    namespace GAME{
         enum class Direction{
             NONE,UP,DOWN,LEFT,RIGHT
         };
     }
-    namespace Math{
+    namespace SCREEN{
+        //int ScreenfFlags = SDL_WINDOW_BORDERLESS;
+        constexpr float CAMERA_FOLLOW_SPEED = 2;
+        constexpr float CAMERA_LERP_SPEED = 0.125f;
+
+        constexpr unsigned char RESIZE = 2;
+
+        constexpr unsigned short HEIGHT = 1024;
+        constexpr unsigned short WIDTH = 768;
+        constexpr unsigned char CELL_SIZE = 30;
+        constexpr unsigned short BORDER_SIZE = 20;
+
+        //constexpr std::chrono::microseconds FRAME_DURATION(16667);
+    }
+    namespace MATH{
         struct Vector2D
         {
             Vector2D()
             :x(0.0f), y(0.0f){}
             Vector2D(float _x, float _y)
             :x(_x), y(_y){}
+            explicit Vector2D(Global::GAME::Direction direction)
+            {
+                switch (direction) {
+                    case Global::GAME::Direction::RIGHT:
+                        x = 1;
+                        y = 0;
+                        break;
+                    case Global::GAME::Direction::LEFT:
+                        x = -1;
+                        y = 0;
+                        break;
+                    case Global::GAME::Direction::UP:
+                        x = 0;
+                        y = -1;
+                        break;
+                    case Global::GAME::Direction::DOWN:
+                        x = 0;
+                        y = 1;
+                        break;
+                    case Global::GAME::Direction::NONE:
+                        x = 0;
+                        y = 0;
+                        break;
+                }
+
+            }
+
             float x, y;
 
             Vector2D& Add(const Vector2D& vec)

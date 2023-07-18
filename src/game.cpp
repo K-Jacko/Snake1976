@@ -6,12 +6,13 @@
 #include "SDL_ttf.h"
 
 Game::Game(){
-    running = false;
-    sceneManager = nullptr;
+    running = true;
+    sceneManager = new SceneManager;
+    windowLayer = new WindowLayer;
+    inputLayer = new InputLayer;
+    gridLayer = new GridLayer;
 }
-Game::~Game() {
-
-}
+Game::~Game() = default;
 void Game::Init() {
     InitSubSystems();
     InitMainSystems();
@@ -25,9 +26,9 @@ void Game::InitMainSystems() {
     else{std::cout << "Text :: Systems Initialised!" << std::endl;}
 }
 void Game::InitSubSystems() {
-    sceneManager = new SceneManager;
     sceneManager->Init();
-
+    inputLayer->Init(&event);
+    gridLayer->Init(GetWindowLayer()->GetRenderer());
 }
 void Game::Event() {
     SDL_PollEvent(&event);
@@ -44,15 +45,22 @@ void Game::Event() {
     }
 }
 void Game::Update() {
-
+inputLayer->Update();
+gridLayer->Update();
 }
 void Game::Draw() {
-
+    SDL_RenderClear(GetWindowLayer()->GetRenderer());
+    gridLayer->Draw();
+    SDL_RenderPresent(GetWindowLayer()->GetRenderer());
 }
-
-bool Game::isRunning() {
+WindowLayer* Game::GetWindowLayer() {
+    return windowLayer;
+}
+bool Game::isRunning() const {
     return running;
 }
 void Game::End() {
+    SDL_Quit();
+    std::cout << "GAME Cleared" << std::endl;
     running = false;
 }

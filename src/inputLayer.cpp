@@ -2,7 +2,7 @@
 
 InputLayer::InputLayer(){
     event = nullptr;
-    inputDirection = Global::Game::Direction::NONE;
+    inputDirection = Global::GAME::Direction::NONE;
 }
 void InputLayer::Init(SDL_Event* m_event) {
     event = m_event;
@@ -11,39 +11,69 @@ void InputLayer::Update() {
     if(event->type== SDL_KEYDOWN){
         switch (event->key.keysym.sym) {
             case SDLK_w:
-                SetInputDirection(Global::Game::Direction::UP);
+                AddInput(Global::GAME::Direction::UP);
                 break;
             case SDLK_a:
-                SetInputDirection(Global::Game::Direction::LEFT);
+                AddInput(Global::GAME::Direction::LEFT);
                 break;
             case SDLK_s:
-                SetInputDirection(Global::Game::Direction::DOWN);
+                AddInput(Global::GAME::Direction::DOWN);
                 break;
             case SDLK_d:
-                SetInputDirection(Global::Game::Direction::LEFT);
+                AddInput(Global::GAME::Direction::RIGHT);
                 break;
         }
     }
     if(event->type == SDL_KEYUP){
         switch (event->key.keysym.sym) {
             case SDLK_w:
-                SetInputDirection(Global::Game::Direction::NONE);
+                RemoveKeyInput(Global::GAME::Direction::UP);
                 break;
             case SDLK_a:
-                SetInputDirection(Global::Game::Direction::NONE);
+                RemoveKeyInput(Global::GAME::Direction::LEFT);
                 break;
             case SDLK_s:
-                SetInputDirection(Global::Game::Direction::NONE);
+                RemoveKeyInput(Global::GAME::Direction::DOWN);
                 break;
             case SDLK_d:
-                SetInputDirection(Global::Game::Direction::NONE);
+                RemoveKeyInput(Global::GAME::Direction::RIGHT);
                 break;
         }
     }
 }
-Global::Game::Direction InputLayer::InputDirection() {
+Global::GAME::Direction InputLayer::InputDirection() {
     return inputDirection;
 }
-void InputLayer::SetInputDirection(Global::Game::Direction m_Direction) {
-    inputDirection = m_Direction;
+void InputLayer::AddInput(Global::GAME::Direction m_Direction) {
+    auto vector = new Global::MATH::Vector2D(m_Direction);
+    if(keyInputs.size() < 2)
+    {
+        keyInputs.push_back(vector);
+        if(Global::DEBUG)
+        {
+            Global::MATH::Vector2D vec;
+            vec = *vector;
+            std::cout << vec << std::endl;
+        }
+    }
+}
+
+void InputLayer::RemoveMouseInput(int _i)
+{
+    auto input = _i;
+    mouseInputs.erase(std::remove_if(mouseInputs.begin(), mouseInputs.end(), [&](int v) {return matchesTarget(v,input);}), mouseInputs.end());
+
+}
+void InputLayer::RemoveKeyInput(Global::GAME::Direction direction)
+{
+    auto vector = new Global::MATH::Vector2D(direction);
+    keyInputs.erase(std::remove_if(keyInputs.begin(), keyInputs.end(), [&](Global::MATH::Vector2D* v) {return matchesTarget(*v, *vector);}), keyInputs.end());
+}
+bool InputLayer::matchesTarget(int _i, int _j)
+{
+    return _i == _j;
+}
+bool InputLayer::matchesTarget(Global::MATH::Vector2D v, Global::MATH::Vector2D t)
+{
+    return v.x == t.x && v.y == t.y;
 }
