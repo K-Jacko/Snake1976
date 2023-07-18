@@ -1,4 +1,0 @@
-D:/Documents/Projects/CLionProjects/Snake1976/cmake-build-debug/CMakeFiles/Snake1976.dir
-D:/Documents/Projects/CLionProjects/Snake1976/cmake-build-debug/CMakeFiles/copy_resources.dir
-D:/Documents/Projects/CLionProjects/Snake1976/cmake-build-debug/CMakeFiles/edit_cache.dir
-D:/Documents/Projects/CLionProjects/Snake1976/cmake-build-debug/CMakeFiles/rebuild_cache.dir
