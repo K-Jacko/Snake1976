@@ -95,7 +95,6 @@ namespace Global
             Vector2D& operator*(const float& i){this->x *= i; this->y *= i; return *this;}
 
             Vector2D& operator*(const int& i){this->x *= i; this->y *= i; return *this;}
-            //Vector2D& operator*(const float & i);
             Vector2D& Zero(){ this->x = 0; this->y = 0; return *this;}
 
             friend std::ostream& operator<<(std::ostream& stream, Vector2D vec){   stream << "(" << vec.x << "x"<< "," << vec.y << "y" << ")";   return stream;  }

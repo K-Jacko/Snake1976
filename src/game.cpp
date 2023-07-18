@@ -29,6 +29,14 @@ void Game::InitSubSystems() {
     sceneManager->Init();
     inputLayer->Init(&event);
     gridLayer->Init(GetWindowLayer()->GetRenderer());
+    auto startButton = UIButton(10,1,ButtonSize::Medium,"Text");
+    uiButtons.push_back(startButton);
+//    auto firstButton = UIButton(Global::SCREEN::WIDTH - Global::SCREEN::WIDTH , 0,ButtonSize::Medium,"Text");
+//    uiButtons.push_back(firstButton);
+//    auto secondButton = UIButton(0, Global::SCREEN::HEIGHT - Global::SCREEN::HEIGHT,ButtonSize::Medium,"Text");
+//    uiButtons.push_back(secondButton);
+//    auto thirdButton = UIButton( Global::SCREEN::WIDTH  - Global::SCREEN::WIDTH , Global::SCREEN::HEIGHT - Global::SCREEN::HEIGHT,ButtonSize::Medium,"Text");
+//    uiButtons.push_back(thirdButton);
 }
 void Game::Event() {
     SDL_PollEvent(&event);
@@ -43,14 +51,21 @@ void Game::Event() {
                     break;
             }
     }
+    for (UIButton button : uiButtons) {
+        button.HandleEvent(&event);
+    }
 }
 void Game::Update() {
 inputLayer->Update();
-gridLayer->Update();
+gridLayer->Update(*inputLayer);
 }
 void Game::Draw() {
     SDL_RenderClear(GetWindowLayer()->GetRenderer());
     gridLayer->Draw();
+    for (UIButton button : uiButtons) {
+        button.Init(GetWindowLayer()->GetRenderer());
+        button.Draw(&event);
+    }
     SDL_RenderPresent(GetWindowLayer()->GetRenderer());
 }
 WindowLayer* Game::GetWindowLayer() {

@@ -13,7 +13,7 @@ void GridLayer::Init(SDL_Renderer* m_renderer)
     renderer = m_renderer;
 }
 
-void GridLayer::Update() {
+void GridLayer::Update(InputLayer inputLayer) {
 
 }
 

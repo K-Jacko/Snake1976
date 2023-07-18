@@ -6,7 +6,7 @@ public:
     GridLayer();
     void Init(SDL_Renderer* m_renderer);
 
-    void Update();
+    void Update(InputLayer inputLayer);
 
     void Draw();
 

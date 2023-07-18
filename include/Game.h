@@ -3,6 +3,7 @@
 #include "InputLayer.h"
 #include "WindowLayer.h"
 #include "GridLayer.h"
+#include "Buttons.h"
 #include <SDL.h>
 
 class Game
@@ -26,4 +27,5 @@ private:
     WindowLayer* windowLayer;
     InputLayer* inputLayer;
     GridLayer* gridLayer;
+    std::vector<UIButton> uiButtons;
 };
