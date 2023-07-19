@@ -16,8 +16,9 @@ Game::Game(){
 }
 Game::~Game() = default;
 void Game::Init() {
-    InitSubSystems();
     InitMainSystems();
+    InitSubSystems();
+
 }
 void Game::InitMainSystems() {
     if(SDL_Init(SDL_INIT_VIDEO) < 0){std::cout << "ERROR" << SDL_GetError() << std::endl;}
@@ -28,6 +29,7 @@ void Game::InitMainSystems() {
     else{std::cout << "Text :: Systems Initialised!" << std::endl;}
 }
 void Game::InitSubSystems() {
+    windowLayer.Instance().Init();
     sceneManager.Instance().Init();
     inputLayer.Instance().Init(&event);
     gridLayer.Instance().Init(windowLayer.Instance().GetRenderer());
@@ -48,9 +50,9 @@ void Game::Event() {
     }
 }
 void Game::Update() {
-inputLayer.Instance().Update();
-gridLayer.Instance().Update();
-uiLayer.Instance().Update(inputLayer);
+    inputLayer.Instance().Update();
+    gridLayer.Instance().Update();
+    uiLayer.Instance().Update(inputLayer);
 }
 void Game::Draw() {
     SDL_RenderClear(windowLayer.Instance().GetRenderer());

@@ -1,5 +1,6 @@
 #pragma once
 #include <SDL.h>
+#include "SDL_ttf.h"
 #include <algorithm>
 #include <iostream>
 #include <vector>
@@ -7,7 +8,7 @@
 #include <bitset>
 #include <memory>
 
-namespace Global
+namespace GLOBAL
 {
 #ifdef NDEBUG
 // Debugging information is enabled
@@ -20,6 +21,7 @@ namespace Global
         enum class Direction{
             NONE,UP,DOWN,LEFT,RIGHT
         };
+
     }
     namespace SCREEN{
         //int ScreenfFlags = SDL_WINDOW_BORDERLESS;
@@ -33,6 +35,16 @@ namespace Global
         constexpr unsigned char CELL_SIZE = 30;
         constexpr unsigned short BORDER_SIZE = 20;
 
+        constexpr unsigned short BOX_PADDING = 20;
+        enum FONT_SIZE{
+            SMALL = 50,
+            MEDIUM = 150,
+            LARGE = 200
+        };
+
+//        SDL_Color KPRIMARY_COLOR = { 0, 0, 0, 255 };
+//        SDL_Color KSECONDARY_COLOR = { 255, 255, 255, 255 };
+
         //constexpr std::chrono::microseconds FRAME_DURATION(16667);
     }
     namespace MATH{
@@ -42,26 +54,26 @@ namespace Global
             :x(0.0f), y(0.0f){}
             Vector2D(float _x, float _y)
             :x(_x), y(_y){}
-            explicit Vector2D(Global::GAME::Direction direction)
+            explicit Vector2D(GLOBAL::GAME::Direction direction)
             {
                 switch (direction) {
-                    case Global::GAME::Direction::RIGHT:
+                    case GLOBAL::GAME::Direction::RIGHT:
                         x = 1;
                         y = 0;
                         break;
-                    case Global::GAME::Direction::LEFT:
+                    case GLOBAL::GAME::Direction::LEFT:
                         x = -1;
                         y = 0;
                         break;
-                    case Global::GAME::Direction::UP:
+                    case GLOBAL::GAME::Direction::UP:
                         x = 0;
                         y = -1;
                         break;
-                    case Global::GAME::Direction::DOWN:
+                    case GLOBAL::GAME::Direction::DOWN:
                         x = 0;
                         y = 1;
                         break;
-                    case Global::GAME::Direction::NONE:
+                    case GLOBAL::GAME::Direction::NONE:
                         x = 0;
                         y = 0;
                         break;

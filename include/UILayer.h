@@ -13,4 +13,5 @@ public:
 private:
     std::vector<UIButton*> uiButtons;
     UIButton button1;
+    UIButton button2;
 };

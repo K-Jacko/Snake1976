@@ -25,5 +25,5 @@ private:
     int height;
     int cellSize;
     SDL_Renderer* renderer;
-    std::vector<Global::MATH::Vector2D> cells;
+    std::vector<GLOBAL::MATH::Vector2D> cells;
 };

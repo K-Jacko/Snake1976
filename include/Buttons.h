@@ -1,5 +1,4 @@
 #pragma once
-#include "Global.h"
 #include "InputLayer.h"
 
 enum ButtonState{
@@ -17,17 +16,20 @@ class UIButton
 {
 public:
     UIButton() = default;
-    UIButton(int m_x, int m_y, ButtonSize m_size,const char* m_text,void(*m_action)());
+    UIButton(int m_x, int m_y, ButtonSize m_size,const char* m_text,GLOBAL::SCREEN::FONT_SIZE fontSize,void(*m_action)());
     void HandleEvent(SDL_Event* m_event);
     void Update(InputLayer* inputLayer);
     void Init(SDL_Renderer* m_renderer);
     void Draw();
 private:
-     ButtonState buttonState;
+    ButtonState buttonState;
     void(*action)();
     SDL_Renderer* renderer{};
     SDL_Point position{};
     SDL_Rect shape{};
     int width, height;
+    bool isPressed;
     const char* text{};
+    SDL_Rect textRect;
+    int fontSize;
 };

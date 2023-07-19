@@ -2,7 +2,7 @@
 
 InputLayer::InputLayer(){
     event = nullptr;
-    inputDirection = Global::GAME::Direction::NONE;
+    inputDirection = GLOBAL::GAME::Direction::NONE;
     isPressedRight = isPressedLeft = false;
 }
 InputLayer::~InputLayer(){
@@ -22,32 +22,32 @@ void InputLayer::Update() {
     if(event->type== SDL_KEYDOWN){
         switch (event->key.keysym.sym) {
             case SDLK_w:
-                AddInput(Global::GAME::Direction::UP);
+                AddInput(GLOBAL::GAME::Direction::UP);
                 break;
             case SDLK_a:
-                AddInput(Global::GAME::Direction::LEFT);
+                AddInput(GLOBAL::GAME::Direction::LEFT);
                 break;
             case SDLK_s:
-                AddInput(Global::GAME::Direction::DOWN);
+                AddInput(GLOBAL::GAME::Direction::DOWN);
                 break;
             case SDLK_d:
-                AddInput(Global::GAME::Direction::RIGHT);
+                AddInput(GLOBAL::GAME::Direction::RIGHT);
                 break;
         }
     }
     if(event->type == SDL_KEYUP){
         switch (event->key.keysym.sym) {
             case SDLK_w:
-                RemoveKeyInput(Global::GAME::Direction::UP);
+                RemoveKeyInput(GLOBAL::GAME::Direction::UP);
                 break;
             case SDLK_a:
-                RemoveKeyInput(Global::GAME::Direction::LEFT);
+                RemoveKeyInput(GLOBAL::GAME::Direction::LEFT);
                 break;
             case SDLK_s:
-                RemoveKeyInput(Global::GAME::Direction::DOWN);
+                RemoveKeyInput(GLOBAL::GAME::Direction::DOWN);
                 break;
             case SDLK_d:
-                RemoveKeyInput(Global::GAME::Direction::RIGHT);
+                RemoveKeyInput(GLOBAL::GAME::Direction::RIGHT);
                 break;
         }
     }
@@ -85,10 +85,10 @@ void InputLayer::Update() {
             break;
     }
 }
-Global::GAME::Direction InputLayer::InputDirection() {
+GLOBAL::GAME::Direction InputLayer::InputDirection() {
     return inputDirection;
 }
-Global::MATH::Vector2D* InputLayer::GetMousePosition(){
+GLOBAL::MATH::Vector2D* InputLayer::GetMousePosition(){
     return &mousePosition;
 
 };
@@ -96,14 +96,14 @@ void InputLayer::AddInput(int m_mouseInput) {
     auto input = m_mouseInput;
     mouseInputs.push_back(input);
 }
-void InputLayer::AddInput(Global::GAME::Direction m_Direction) {
-    auto vector = new Global::MATH::Vector2D(m_Direction);
+void InputLayer::AddInput(GLOBAL::GAME::Direction m_Direction) {
+    auto vector = new GLOBAL::MATH::Vector2D(m_Direction);
     if(keyInputs.size() < 2)
     {
         keyInputs.push_back(vector);
-        if(Global::DEBUG)
+        if(GLOBAL::DEBUG)
         {
-            Global::MATH::Vector2D vec;
+            GLOBAL::MATH::Vector2D vec;
             vec = *vector;
             std::cout << vec << std::endl;
         }
@@ -116,16 +116,16 @@ void InputLayer::RemoveMouseInput(int m_mouseInput)
     mouseInputs.erase(std::remove_if(mouseInputs.begin(), mouseInputs.end(), [&](int v) {return matchesTarget(v,input);}), mouseInputs.end());
 
 }
-void InputLayer::RemoveKeyInput(Global::GAME::Direction m_direction)
+void InputLayer::RemoveKeyInput(GLOBAL::GAME::Direction m_direction)
 {
-    auto vector = new Global::MATH::Vector2D(m_direction);
-    keyInputs.erase(std::remove_if(keyInputs.begin(), keyInputs.end(), [&](Global::MATH::Vector2D* v) {return matchesTarget(*v, *vector);}), keyInputs.end());
+    auto vector = new GLOBAL::MATH::Vector2D(m_direction);
+    keyInputs.erase(std::remove_if(keyInputs.begin(), keyInputs.end(), [&](GLOBAL::MATH::Vector2D* v) {return matchesTarget(*v, *vector);}), keyInputs.end());
 }
 bool InputLayer::matchesTarget(int _i, int _j)
 {
     return _i == _j;
 }
-bool InputLayer::matchesTarget(Global::MATH::Vector2D v, Global::MATH::Vector2D t)
+bool InputLayer::matchesTarget(GLOBAL::MATH::Vector2D v, GLOBAL::MATH::Vector2D t)
 {
     return v.x == t.x && v.y == t.y;
 }
