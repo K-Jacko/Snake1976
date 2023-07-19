@@ -1,9 +1,10 @@
 #include "Buttons.h"
 
-UIButton::UIButton(int m_x, int m_y, ButtonSize m_size, const char* m_text)
+UIButton::UIButton(int m_x, int m_y, ButtonSize m_size, const char* m_text,void(*m_action)())
 {
-    position.x = m_x * Global::SCREEN::CELL_SIZE;
-    position.y = m_y * Global::SCREEN::CELL_SIZE;
+    buttonState = ButtonState::NORMAL;
+    position.x = m_x ;
+    position.y = m_y ;
     switch (m_size) {
         case ButtonSize::Small:
             width = height = 100;
@@ -16,45 +17,48 @@ UIButton::UIButton(int m_x, int m_y, ButtonSize m_size, const char* m_text)
             width = height = 400;
             break;
     }
-
-
-    currentSprite = BUTTON_SPRITE_MOUSE_OUT;
+    shape.x = position.x ;
+    shape.y = position.y;
+    shape.w = width;
+    shape.h = height;
+    action = m_action;
+    std::cout << position.x << " " << position.y << std::endl;
 }
 void UIButton::Init(SDL_Renderer* m_renderer){
     renderer = m_renderer;
 }
-void UIButton::Draw(SDL_Event* m_event) {
-    SDL_Rect rc;
-    rc.x = position.x ;
-    rc.y = position.y;
-    rc.w = width;
-    rc.h = height;
+void UIButton::Update(InputLayer* inputLayer){
+    SDL_Point point = SDL_Point(inputLayer->Instance().GetMousePosition()->x,inputLayer->Instance().GetMousePosition()->y);
 
-    //SDL_RenderDrawRect(renderer, &rc);
-    switch (currentSprite) {
-        case BUTTON_SPRITE_MOUSE_OVER_MOTION:
+    if(SDL_PointInRect(&point,&shape)){
+        if(inputLayer->Instance().LeftIsPressed()){
+            buttonState = ButtonState::PRESSED;
+            action();
+        }else if(!inputLayer->Instance().LeftIsPressed()){
+            buttonState = ButtonState::HOVER;
+        }
+    }
+    else if(!SDL_PointInRect(&point,&shape)){
+        buttonState = ButtonState::NORMAL;
+    }
+}
+void UIButton::Draw() {
+    switch (buttonState) {
+        case ButtonState::NORMAL:
             SDL_SetRenderDrawColor(renderer,255,0,0,255);
             break;
-        case BUTTON_SPRITE_MOUSE_DOWN:
+        case ButtonState::HOVER:
             SDL_SetRenderDrawColor(renderer,0,255,0,255);
             break;
-        case BUTTON_SPRITE_MOUSE_UP:
+        case ButtonState::PRESSED:
             SDL_SetRenderDrawColor(renderer,0,0,255,255);
             break;
-        case BUTTON_SPRITE_MOUSE_OUT:
-            SDL_SetRenderDrawColor(renderer,255,255,255,255);
-            break;
-        case BUTTON_SPRITE_TOTAL:
-            break;
+
     }
 
-    SDL_RenderFillRect(renderer,&rc);
+    SDL_RenderFillRect(renderer,&shape);
     SDL_SetRenderDrawColor(renderer,0,0,0,255);
 
-}
-void UIButton::SetPosition(int m_x, int m_y) {
-    position.x = m_x;
-    position.y = m_y;
 }
 
 void UIButton::HandleEvent(SDL_Event* m_event )

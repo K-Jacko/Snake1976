@@ -4,27 +4,22 @@ class GridLayer
 {
 public:
     GridLayer();
+    GridLayer& Instance();
     void Init(SDL_Renderer* m_renderer);
-
-    void Update(InputLayer inputLayer);
-
+    void Update();
     void Draw();
-
     int GetWidth()
     {
         return width;
     }
-
     int GetHeight()
     {
         return height;
     }
-
     int GetCellSize()
     {
         return cellSize;
     }
-
 private:
     int width;
     int height;

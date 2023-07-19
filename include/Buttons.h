@@ -1,13 +1,11 @@
 #pragma once
 #include "Global.h"
+#include "InputLayer.h"
 
-enum ButtonState
-{
-    BUTTON_SPRITE_MOUSE_OUT = 0,
-    BUTTON_SPRITE_MOUSE_OVER_MOTION = 1,
-    BUTTON_SPRITE_MOUSE_DOWN = 2,
-    BUTTON_SPRITE_MOUSE_UP = 3,
-    BUTTON_SPRITE_TOTAL = 4
+enum ButtonState{
+    NORMAL = 0,
+    HOVER = 1,
+    PRESSED = 2
 };
 enum ButtonSize
 {
@@ -19,14 +17,17 @@ class UIButton
 {
 public:
     UIButton() = default;
-    UIButton(int m_x, int m_y, ButtonSize m_size,const char* m_text);
+    UIButton(int m_x, int m_y, ButtonSize m_size,const char* m_text,void(*m_action)());
     void HandleEvent(SDL_Event* m_event);
+    void Update(InputLayer* inputLayer);
     void Init(SDL_Renderer* m_renderer);
-    void Draw(SDL_Event* m_event);
+    void Draw();
 private:
-    SDL_Renderer* renderer;
-    SDL_Point position;
+     ButtonState buttonState;
+    void(*action)();
+    SDL_Renderer* renderer{};
+    SDL_Point position{};
+    SDL_Rect shape{};
     int width, height;
-    const char* text;
-    ButtonState currentSprite;
+    const char* text{};
 };

@@ -4,6 +4,7 @@
 #include "WindowLayer.h"
 #include "GridLayer.h"
 #include "Buttons.h"
+#include "UILayer.h"
 #include <SDL.h>
 
 class Game
@@ -18,14 +19,13 @@ public:
     void Update();
     void Draw();
     void End();
-    WindowLayer* GetWindowLayer();
     [[nodiscard]] bool isRunning() const;
     SDL_Event event{};
 private:
     bool running;
-    SceneManager* sceneManager;
-    WindowLayer* windowLayer;
-    InputLayer* inputLayer;
-    GridLayer* gridLayer;
-    std::vector<UIButton> uiButtons;
+    SceneManager sceneManager;
+    WindowLayer windowLayer;
+    InputLayer inputLayer;
+    GridLayer gridLayer;
+    UILayer uiLayer;
 };

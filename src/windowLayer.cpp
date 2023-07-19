@@ -9,7 +9,10 @@ WindowLayer::~WindowLayer(){
     SDL_DestroyWindow(window);
     SDL_DestroyRenderer(renderer);
 }
-
+WindowLayer& WindowLayer::Instance() {
+    static WindowLayer windowLayer;
+    return windowLayer;
+}
 SDL_Window* WindowLayer::CreateWindow() {
     const char* title = "Snake 1976";
     window = SDL_CreateWindow(title,SDL_WINDOWPOS_UNDEFINED,SDL_WINDOWPOS_UNDEFINED, Global::SCREEN::WIDTH, Global::SCREEN::HEIGHT, SDL_WINDOW_SHOWN);

@@ -10,6 +10,7 @@ struct Scene
 class SceneManager
 {
 public:
+    SceneManager& Instance();
     SceneManager();
     void ChangeScene();
     void LoadScene();

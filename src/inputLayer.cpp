@@ -3,12 +3,17 @@
 InputLayer::InputLayer(){
     event = nullptr;
     inputDirection = Global::GAME::Direction::NONE;
+    isPressedRight = isPressedLeft = false;
 }
 InputLayer::~InputLayer(){
     keyInputs.clear();
     keyInputs.shrink_to_fit();
     mouseInputs.clear();
     mouseInputs.shrink_to_fit();
+}
+InputLayer& InputLayer::Instance() {
+    static InputLayer instance;
+    return instance;
 }
 void InputLayer::Init(SDL_Event* m_event) {
     event = m_event;
@@ -51,36 +56,42 @@ void InputLayer::Update() {
             if(event->button.button == SDL_BUTTON_LEFT)
             {
                 AddInput(1);
-                std::cout << mousePosition << std::endl;
+                isPressedLeft = true;
 
             }
             if(event->button.button == SDL_BUTTON_RIGHT)
             {
                 AddInput(2);
-
+                isPressedRight = true;
             }
             break;
         case SDL_MOUSEBUTTONUP:
             if(event->button.button == SDL_BUTTON_LEFT)
             {
                 RemoveMouseInput(1);
+                isPressedLeft = false;
             }
             if(event->button.button == SDL_BUTTON_RIGHT)
             {
                 RemoveMouseInput(2);
+                isPressedRight = false;
             }
             break;
         case SDL_MOUSEMOTION:
             int x,y;
             Uint32 mouseState = SDL_GetMouseState(&x, &y);
-            mousePosition.x = x / Global::SCREEN::CELL_SIZE;
-            mousePosition.y = y / Global::SCREEN::CELL_SIZE;
+            mousePosition.x = x;
+            mousePosition.y = y;
             break;
     }
 }
 Global::GAME::Direction InputLayer::InputDirection() {
     return inputDirection;
 }
+Global::MATH::Vector2D* InputLayer::GetMousePosition(){
+    return &mousePosition;
+
+};
 void InputLayer::AddInput(int m_mouseInput) {
     auto input = m_mouseInput;
     mouseInputs.push_back(input);
@@ -99,15 +110,15 @@ void InputLayer::AddInput(Global::GAME::Direction m_Direction) {
     }
 }
 
-void InputLayer::RemoveMouseInput(int _i)
+void InputLayer::RemoveMouseInput(int m_mouseInput)
 {
-    auto input = _i;
+    auto input = m_mouseInput;
     mouseInputs.erase(std::remove_if(mouseInputs.begin(), mouseInputs.end(), [&](int v) {return matchesTarget(v,input);}), mouseInputs.end());
 
 }
-void InputLayer::RemoveKeyInput(Global::GAME::Direction direction)
+void InputLayer::RemoveKeyInput(Global::GAME::Direction m_direction)
 {
-    auto vector = new Global::MATH::Vector2D(direction);
+    auto vector = new Global::MATH::Vector2D(m_direction);
     keyInputs.erase(std::remove_if(keyInputs.begin(), keyInputs.end(), [&](Global::MATH::Vector2D* v) {return matchesTarget(*v, *vector);}), keyInputs.end());
 }
 bool InputLayer::matchesTarget(int _i, int _j)
@@ -117,4 +128,12 @@ bool InputLayer::matchesTarget(int _i, int _j)
 bool InputLayer::matchesTarget(Global::MATH::Vector2D v, Global::MATH::Vector2D t)
 {
     return v.x == t.x && v.y == t.y;
+}
+
+bool InputLayer::LeftIsPressed() {
+    return isPressedLeft;
+}
+
+bool InputLayer::RightIsPressed(){
+    return isPressedRight;
 }

@@ -8,12 +8,17 @@ GridLayer::GridLayer() {
     renderer = nullptr;
 }
 
+GridLayer& GridLayer::Instance() {
+    static GridLayer gridLayer;
+    return gridLayer;
+}
+
 void GridLayer::Init(SDL_Renderer* m_renderer)
 {
     renderer = m_renderer;
 }
 
-void GridLayer::Update(InputLayer inputLayer) {
+void GridLayer::Update() {
 
 }
 
