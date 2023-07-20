@@ -1,5 +1,6 @@
 #include "Buttons.h"
 #include "WindowLayer.h"
+#include "InputLayer.h"
 
 Button::Button() {
 
@@ -8,15 +9,16 @@ Button::Button(int m_x, int m_y, ButtonSize m_size, void(*m_action)()) {
     renderer = WindowLayer::Instance().GetRenderer();
     SetSize(m_size);
     buttonState = ButtonState::NORMAL;
-    shape = SDL_Rect(0,0,0,0);
-    position = SDL_Point(m_x - (width/2), m_y - (height/2)) ;
+    shape = SDL_Rect();
+    position = SDL_Point() ;
     isPressed = false;
     action = m_action;
 }
 void Button::Update() {
     InputLayer& inputLayer = InputLayer::Instance();
-    SDL_Point point = SDL_Point(InputLayer::Instance().GetMousePosition().x,InputLayer::Instance().GetMousePosition().y);
-
+    SDL_Point point;
+    point.x = InputLayer::Instance().GetMousePosition().x;
+    point.y = InputLayer::Instance().GetMousePosition().y;
     if(SDL_PointInRect(&point,&shape)){
         if(InputLayer::Instance().LeftIsPressed()){
             buttonState = ButtonState::PRESSED;
@@ -81,6 +83,18 @@ TextButton::TextButton(int m_x, int m_y, ButtonSize m_size, const char* m_text, 
     action = m_action;
     text = m_text;
     fontSize = m_fontSize;
+
+    font = TTF_OpenFont("resources/Pixeboy-z8XGD.ttf", fontSize);
+
+    if (font == nullptr) {
+        SDL_Log("Failed to load font: %s", TTF_GetError());
+    }
+    if (textSurface == nullptr) {
+        SDL_Log("Failed to render text surface: %s", TTF_GetError());
+    }
+    if (textTexture == nullptr) {
+        SDL_Log("Failed to create text texture: %s", SDL_GetError());
+    }
 }
 
 void TextButton::Draw() {
@@ -99,19 +113,9 @@ void TextButton::Draw() {
     if(GLOBAL::DEBUG)
         SDL_RenderFillRect(renderer,&shape);
 
-    TTF_Font* font = TTF_OpenFont("resources/Pixeboy-z8XGD.ttf", fontSize);
-    SDL_Surface* textSurface = TTF_RenderText_Solid(font, text, textColor);
-    SDL_Texture* textTexture = SDL_CreateTextureFromSurface(renderer, textSurface);
+    textSurface = TTF_RenderText_Solid(font, text, textColor);
+    textTexture = SDL_CreateTextureFromSurface(renderer, textSurface);
 
-    if (font == nullptr) {
-        SDL_Log("Failed to load font: %s", TTF_GetError());
-    }
-    if (textSurface == nullptr) {
-        SDL_Log("Failed to render text surface: %s", TTF_GetError());
-    }
-    if (textTexture == nullptr) {
-        SDL_Log("Failed to create text texture: %s", SDL_GetError());
-    }
     int textWidth, textHeight;
     SDL_QueryTexture(textTexture, nullptr, nullptr, &textWidth, &textHeight);
 

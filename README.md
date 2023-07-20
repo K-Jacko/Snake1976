@@ -1,13 +1,15 @@
 # Snake1976
-The classic snake game made in c++ using KoRRA
+- The classic snake game made in c++ using KoRRA
+- 1 of 5 in my classic remake project.
+- Simply put this is the old classic snake game. Remade using my own c++ engine.
+- Im using this game to solidify features for the KoRRA engine
 
-Simply put this is the old classic snake game. Remade using my own c++ engine;
 
+## Latest Build Features
 
-## Latest Build
-
-### Dos
-- Buttons be pressin!!
-- <img src="media/splash.gif"> 
-- Grid interactables
-- <img src="media/grid.gif">
+|      Features      |            Media             |
+|:------------------:|:----------------------------:|
+|      Buttons       | <img src="media/splash.gif"> |
+| Grid Interactables |  <img src="media/grid.gif">  |
+|    Memory Leaks    |  <img src="media/leak.PNG">  |
+-----------
