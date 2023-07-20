@@ -36,3 +36,6 @@ SDL_Window* WindowLayer::GetWindow() {
 SDL_Renderer* WindowLayer::GetRenderer() {
     return renderer;
 }
+void WindowLayer::Reset() {
+
+}

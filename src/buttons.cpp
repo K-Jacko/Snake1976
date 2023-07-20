@@ -23,8 +23,8 @@ void Button::Update() {
         if(InputLayer::Instance().LeftIsPressed()){
             buttonState = ButtonState::PRESSED;
             if(!isPressed){
-                action();
                 isPressed = true;
+                action();
             }
         }else if(!InputLayer::Instance().LeftIsPressed()){
             buttonState = ButtonState::HOVER;
@@ -89,12 +89,7 @@ TextButton::TextButton(int m_x, int m_y, ButtonSize m_size, const char* m_text, 
     if (font == nullptr) {
         SDL_Log("Failed to load font: %s", TTF_GetError());
     }
-    if (textSurface == nullptr) {
-        SDL_Log("Failed to render text surface: %s", TTF_GetError());
-    }
-    if (textTexture == nullptr) {
-        SDL_Log("Failed to create text texture: %s", SDL_GetError());
-    }
+
 }
 
 void TextButton::Draw() {
@@ -115,6 +110,13 @@ void TextButton::Draw() {
 
     textSurface = TTF_RenderText_Solid(font, text, textColor);
     textTexture = SDL_CreateTextureFromSurface(renderer, textSurface);
+
+    if (textSurface == nullptr) {
+        SDL_Log("Failed to render text surface: %s", TTF_GetError());
+    }
+    if (textTexture == nullptr) {
+        SDL_Log("Failed to create text texture: %s", SDL_GetError());
+    }
 
     int textWidth, textHeight;
     SDL_QueryTexture(textTexture, nullptr, nullptr, &textWidth, &textHeight);

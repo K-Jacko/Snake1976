@@ -1,5 +1,4 @@
 #include "Game.h"
-#include "SceneManager.h"
 #include <iostream>
 #include <SDL.h>
 #include "SDL_image.h"
@@ -11,6 +10,10 @@ Game::Game(){
     running = true;
 }
 Game::~Game() = default;
+Game& Game::Instance() {
+    static Game game;
+    return game;
+}
 void Game::Init() {
     InitMainSystems();
     InitSubSystems();

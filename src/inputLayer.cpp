@@ -2,7 +2,6 @@
 
 InputLayer::InputLayer(){
     event = nullptr;
-    inputDirection = GLOBAL::GAME::Direction::NONE;
     isPressedRight = isPressedLeft = false;
 }
 InputLayer::~InputLayer(){
@@ -85,8 +84,11 @@ void InputLayer::Update() {
             break;
     }
 }
-GLOBAL::GAME::Direction InputLayer::InputDirection() {
-    return inputDirection;
+void InputLayer::Reset() {
+    keyInputs.clear();
+    keyInputs.shrink_to_fit();
+    mouseInputs.clear();
+    mouseInputs.shrink_to_fit();
 }
 GLOBAL::MATH::Vector2D InputLayer::GetMousePosition(){
     return mousePosition;

@@ -1,4 +1,5 @@
 #include "SceneManager.h"
+#include "Game.h"
 
 Scene::Scene(){
 
@@ -12,7 +13,6 @@ void Scene::OnExit() {
 }
 
 SceneManager::SceneManager(){
-
 }
 SceneManager& SceneManager::Instance() {
     static SceneManager sceneManager;

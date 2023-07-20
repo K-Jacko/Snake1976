@@ -40,7 +40,7 @@ private:
     const char* text;
     SDL_Rect textRect{};
     int fontSize;
-    SDL_Surface* textSurface;
-    SDL_Texture* textTexture;
+    SDL_Surface* textSurface{};
+    SDL_Texture* textTexture{};
     TTF_Font* font;
 };

@@ -32,9 +32,10 @@ void Grid::Update()
 
 }
 void Grid::DrawGrid() {
-    for(Cell* cell:cells)
-    {
-        DrawCell(cell);
+    if(cells.size() > 1){
+        for(Cell* cell:cells){
+            DrawCell(cell);
+        }
     }
 }
 void Grid::FillCell(Cell* cell){

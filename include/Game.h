@@ -4,13 +4,14 @@
 #include "WindowLayer.h"
 #include "GridLayer.h"
 #include "Buttons.h"
-#include "GUI/UILayer.h"
+#include "UILayer.h"
 #include <SDL.h>
 
 class Game
 {
 public:
     Game();
+    Game& Instance();
     ~Game();
     void Init();
     static void InitMainSystems();
@@ -19,6 +20,7 @@ public:
     static void Update();
     static void Draw();
     static void End();
+    static void LoadScenes();
     static bool isRunning();
     SDL_Event event{};
 private:

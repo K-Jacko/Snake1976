@@ -4,31 +4,29 @@
 
 GridLayer::GridLayer() {
     renderer = nullptr;
+    mainGrid = nullptr;
 }
 
 GridLayer::~GridLayer(){
-
+    renderer = nullptr;
+    mainGrid = nullptr;
 }
-
 GridLayer& GridLayer::Instance() {
     static GridLayer gridLayer;
     return gridLayer;
 }
-
 void GridLayer::Init()
 {
     renderer = WindowLayer::Instance().GetRenderer();
-    mainGrid = new Grid(15,20,48,renderer);
-
 }
-
 void GridLayer::Update() {
 
 }
-
 void GridLayer::Draw() {
 
-    mainGrid->DrawGrid();
+    if(mainGrid != nullptr){
+        mainGrid->DrawGrid();
+    }
     // Top border
     SDL_Rect topBorder = {0, 0, GLOBAL::SCREEN::SCREEN_WIDTH, GLOBAL::SCREEN::BORDER_SIZE };
     SDL_RenderFillRect(renderer, &topBorder);
@@ -46,8 +44,10 @@ void GridLayer::Draw() {
     SDL_RenderFillRect(renderer, &rightBorder);
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 }
-
-
-
-
-
+void GridLayer::Reset() {
+    delete mainGrid;
+}
+void GridLayer::LoadNewGrid(int m_x, int m_y, int m_cellSize){
+    Reset();
+    mainGrid = new Grid(m_x,m_y,m_cellSize,renderer);
+}

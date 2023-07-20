@@ -11,7 +11,8 @@ public:
     void Init();
     void Update();
     void Draw();
-
+    void Reset();
+    void LoadNewGrid(int m_x, int m_y, int m_cellSize);
 private:
     Grid* mainGrid;
     SDL_Renderer* renderer;
