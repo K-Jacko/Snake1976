@@ -8,28 +8,36 @@ enum ButtonState{
 };
 enum ButtonSize
 {
+    Tiny,
     Small,
     Medium,
     Large
 };
-class UIButton
+class Button
 {
 public:
-    UIButton() = default;
-    UIButton(int m_x, int m_y, ButtonSize m_size,const char* m_text,GLOBAL::SCREEN::FONT_SIZE fontSize,void(*m_action)());
-    void HandleEvent(SDL_Event* m_event);
-    void Update(InputLayer* inputLayer);
-    void Init(SDL_Renderer* m_renderer);
-    void Draw();
-private:
+    Button();
+    Button(int m_x, int m_y, ButtonSize m_size, void(*m_action)());
+    void SetSize(ButtonSize m_size);
+    virtual void Update();
+    virtual void Draw();
+protected:
     ButtonState buttonState;
-    void(*action)();
-    SDL_Renderer* renderer{};
-    SDL_Point position{};
-    SDL_Rect shape{};
+    SDL_Renderer* renderer;
+    SDL_Point position;
+    SDL_Rect shape;
     int width, height;
     bool isPressed;
-    const char* text{};
-    SDL_Rect textRect;
+    void(*action)();
+};
+class TextButton : public Button
+{
+public:
+    TextButton();
+    TextButton(int m_x, int m_y, ButtonSize m_size, const char* m_text, GLOBAL::SCREEN::FONT_SIZE fontSize, void(*m_action)());
+    void Draw() override;
+private:
+    const char* text;
+    SDL_Rect textRect{};
     int fontSize;
 };

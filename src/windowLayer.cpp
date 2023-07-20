@@ -18,7 +18,7 @@ WindowLayer& WindowLayer::Instance() {
 }
 SDL_Window* WindowLayer::CreateWindow() {
     const char* title = "Snake 1976";
-    window = SDL_CreateWindow(title, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, GLOBAL::SCREEN::WIDTH, GLOBAL::SCREEN::HEIGHT, SDL_WINDOW_SHOWN);
+    window = SDL_CreateWindow(title, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, GLOBAL::SCREEN::SCREEN_WIDTH, GLOBAL::SCREEN::SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
     if(window == nullptr){std::cerr << "Window :: Error " << SDL_GetError() << std::endl;}
     else {std::cout << "Window :: Initialised! " << SDL_GetError() << std::endl;}
     return window;

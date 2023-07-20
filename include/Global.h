@@ -22,6 +22,7 @@ namespace GLOBAL
             NONE,UP,DOWN,LEFT,RIGHT
         };
 
+
     }
     namespace SCREEN{
         //int ScreenfFlags = SDL_WINDOW_BORDERLESS;
@@ -30,13 +31,16 @@ namespace GLOBAL
 
         constexpr unsigned char RESIZE = 2;
 
-        constexpr unsigned short HEIGHT = 1024;
-        constexpr unsigned short WIDTH = 768;
-        constexpr unsigned char CELL_SIZE = 30;
+        constexpr unsigned short SCREEN_HEIGHT = 1024;
+        constexpr unsigned short SCREEN_WIDTH = 768;
+
+
+        constexpr unsigned char CELL_SIZE = 48;
         constexpr unsigned short BORDER_SIZE = 20;
 
         constexpr unsigned short BOX_PADDING = 20;
         enum FONT_SIZE{
+            TINY = 25,
             SMALL = 50,
             MEDIUM = 150,
             LARGE = 200
@@ -47,12 +51,14 @@ namespace GLOBAL
 
         //constexpr std::chrono::microseconds FRAME_DURATION(16667);
     }
+
+
     namespace MATH{
         struct Vector2D
         {
             Vector2D()
             :x(0.0f), y(0.0f){}
-            Vector2D(float _x, float _y)
+            Vector2D(int _x, int _y)
             :x(_x), y(_y){}
             explicit Vector2D(GLOBAL::GAME::Direction direction)
             {
@@ -81,7 +87,7 @@ namespace GLOBAL
 
             }
 
-            float x, y;
+            int x, y;
 
             Vector2D& Add(const Vector2D& vec)
             {this->x += vec.x;this->y += vec.y;return *this;}
@@ -92,7 +98,6 @@ namespace GLOBAL
             Vector2D& Divide(const Vector2D& vec)
             {this->x /= vec.x;this->y /= vec.y;return *this;}
 
-
             friend Vector2D& operator*(Vector2D& v1, const Vector2D& v2){   return  v1.Multiply(v2);    }
             friend Vector2D& operator-(Vector2D& v1, const Vector2D& v2){   return  v1.Subtract(v2);    }
             friend Vector2D& operator+(Vector2D& v1, const Vector2D& v2){   return  v1.Add(v2); }
@@ -102,11 +107,13 @@ namespace GLOBAL
             Vector2D& operator-=(const Vector2D& vec){   return this->Subtract(vec); }
             Vector2D& operator*=(const Vector2D& vec){   return this->Multiply(vec); }
             Vector2D& operator/=(const Vector2D& vec){   return this->Divide(vec);   }
-            Vector2D& operator*=(float i){  *this = *this * i ;return *this;}
+            bool operator==(Vector2D& vec){ return (x == vec.x) && (y == vec.y);   }
+            Vector2D& operator*=(int i){  *this = *this * i ;return *this;}
 
             Vector2D& operator*(const float& i){this->x *= i; this->y *= i; return *this;}
 
             Vector2D& operator*(const int& i){this->x *= i; this->y *= i; return *this;}
+            Vector2D& operator/(const int& i){this->x /= i; this->y /= i; return *this;}
             Vector2D& Zero(){ this->x = 0; this->y = 0; return *this;}
 
             friend std::ostream& operator<<(std::ostream& stream, Vector2D vec){   stream << "(" << vec.x << "x"<< "," << vec.y << "y" << ")";   return stream;  }

@@ -6,7 +6,7 @@ class InputLayer
 public:
     InputLayer();
     ~InputLayer();
-    InputLayer& Instance();
+    static InputLayer& Instance();
     void Init(SDL_Event* m_event);
     void Update();
     GLOBAL::GAME::Direction InputDirection();
@@ -18,7 +18,7 @@ public:
     bool RightIsPressed();
     bool LeftIsPressed();
     std::vector<int> GetMouseInputs(){return mouseInputs;}
-    GLOBAL::MATH::Vector2D* GetMousePosition();
+    GLOBAL::MATH::Vector2D GetMousePosition();
 private:
     bool isPressedLeft, isPressedRight;
     GLOBAL::GAME::Direction inputDirection;

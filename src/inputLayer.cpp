@@ -88,8 +88,8 @@ void InputLayer::Update() {
 GLOBAL::GAME::Direction InputLayer::InputDirection() {
     return inputDirection;
 }
-GLOBAL::MATH::Vector2D* InputLayer::GetMousePosition(){
-    return &mousePosition;
+GLOBAL::MATH::Vector2D InputLayer::GetMousePosition(){
+    return mousePosition;
 
 };
 void InputLayer::AddInput(int m_mouseInput) {
@@ -101,12 +101,6 @@ void InputLayer::AddInput(GLOBAL::GAME::Direction m_Direction) {
     if(keyInputs.size() < 2)
     {
         keyInputs.push_back(vector);
-        if(GLOBAL::DEBUG)
-        {
-            GLOBAL::MATH::Vector2D vec;
-            vec = *vector;
-            std::cout << vec << std::endl;
-        }
     }
 }
 

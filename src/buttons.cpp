@@ -1,23 +1,77 @@
 #include "Buttons.h"
+#include "WindowLayer.h"
 
-UIButton::UIButton(int m_x, int m_y, ButtonSize m_size, const char* m_text,GLOBAL::SCREEN::FONT_SIZE m_fontSize,void(*m_action)())
-{
+Button::Button() {
+
+}
+Button::Button(int m_x, int m_y, ButtonSize m_size, void(*m_action)()) {
+    renderer = WindowLayer::Instance().GetRenderer();
+    SetSize(m_size);
     buttonState = ButtonState::NORMAL;
+    shape = SDL_Rect(0,0,0,0);
+    position = SDL_Point(m_x - (width/2), m_y - (height/2)) ;
     isPressed = false;
+    action = m_action;
+}
+void Button::Update() {
+    InputLayer& inputLayer = InputLayer::Instance();
+    SDL_Point point = SDL_Point(InputLayer::Instance().GetMousePosition().x,InputLayer::Instance().GetMousePosition().y);
+
+    if(SDL_PointInRect(&point,&shape)){
+        if(InputLayer::Instance().LeftIsPressed()){
+            buttonState = ButtonState::PRESSED;
+            if(!isPressed){
+                action();
+                isPressed = true;
+            }
+        }else if(!InputLayer::Instance().LeftIsPressed()){
+            buttonState = ButtonState::HOVER;
+        }
+    }
+    else if(!SDL_PointInRect(&point,&shape)){
+        buttonState = ButtonState::NORMAL;
+        isPressed = false;
+    }
+}
+void Button::Draw() {
+
+}
+void Button::SetSize(ButtonSize m_size) {
     switch (m_size) {
         case ButtonSize::Small:
             width = GLOBAL::SCREEN::FONT_SIZE::SMALL * 2 + 150;
             height = GLOBAL::SCREEN::FONT_SIZE::SMALL * 2 -50;
             break;
         case ButtonSize::Medium:
-            width = 200;
-            height = 100;
+            width = GLOBAL::SCREEN::FONT_SIZE::MEDIUM + 150;
+            height = GLOBAL::SCREEN::FONT_SIZE::MEDIUM -50;
             break;
         case ButtonSize::Large:
             width = GLOBAL::SCREEN::FONT_SIZE::LARGE * 2;
-            height = GLOBAL::SCREEN::FONT_SIZE::LARGE -100;
+            height = GLOBAL::SCREEN::FONT_SIZE::LARGE - 100;
+            break;
+        case Tiny:
+            width = GLOBAL::SCREEN::FONT_SIZE::TINY;
+            height = GLOBAL::SCREEN::FONT_SIZE::TINY;
             break;
     }
+}
+
+TextButton::TextButton() {
+    buttonState = ButtonState::NORMAL;
+    isPressed = false;
+    position.y = height = width = position.y = position.x = shape.x = shape.y = shape.w = shape.h = position.x = 0 ;
+    action = nullptr;
+    text = nullptr;
+    fontSize = 0;
+}
+
+TextButton::TextButton(int m_x, int m_y, ButtonSize m_size, const char* m_text, GLOBAL::SCREEN::FONT_SIZE m_fontSize, void(*m_action)())
+{
+    renderer = WindowLayer::Instance().GetRenderer();
+    TextButton::SetSize(m_size);
+    buttonState = ButtonState::NORMAL;
+    isPressed = false;
     position.x = m_x - (width/2);
     position.y = m_y - (height/2);
     shape.x = position.x ;
@@ -27,35 +81,9 @@ UIButton::UIButton(int m_x, int m_y, ButtonSize m_size, const char* m_text,GLOBA
     action = m_action;
     text = m_text;
     fontSize = m_fontSize;
-    std::cout << position.x << " " << position.y << std::endl;
 }
-void UIButton::Init(SDL_Renderer* m_renderer){
-    renderer = m_renderer;
 
-
-
-}
-void UIButton::Update(InputLayer* inputLayer){
-    SDL_Point point = SDL_Point(inputLayer->Instance().GetMousePosition()->x,inputLayer->Instance().GetMousePosition()->y);
-
-    if(SDL_PointInRect(&point,&shape)){
-        if(inputLayer->Instance().LeftIsPressed()){
-            buttonState = ButtonState::PRESSED;
-            if(!isPressed){
-                action();
-                isPressed = true;
-            }
-        }else if(!inputLayer->Instance().LeftIsPressed()){
-            buttonState = ButtonState::HOVER;
-            isPressed = false;
-        }
-    }
-    else if(!SDL_PointInRect(&point,&shape)){
-        buttonState = ButtonState::NORMAL;
-        isPressed = false;
-    }
-}
-void UIButton::Draw() {
+void TextButton::Draw() {
     SDL_Color textColor;
     switch (buttonState) {
         case ButtonState::NORMAL:
@@ -72,19 +100,15 @@ void UIButton::Draw() {
         SDL_RenderFillRect(renderer,&shape);
 
     TTF_Font* font = TTF_OpenFont("resources/Pixeboy-z8XGD.ttf", fontSize);
+    SDL_Surface* textSurface = TTF_RenderText_Solid(font, text, textColor);
+    SDL_Texture* textTexture = SDL_CreateTextureFromSurface(renderer, textSurface);
+
     if (font == nullptr) {
         SDL_Log("Failed to load font: %s", TTF_GetError());
     }
-
-
-    // Render the text
-
-    SDL_Surface* textSurface = TTF_RenderText_Solid(font, text, textColor);
     if (textSurface == nullptr) {
         SDL_Log("Failed to render text surface: %s", TTF_GetError());
     }
-
-    SDL_Texture* textTexture = SDL_CreateTextureFromSurface(renderer, textSurface);
     if (textTexture == nullptr) {
         SDL_Log("Failed to create text texture: %s", SDL_GetError());
     }
@@ -101,9 +125,4 @@ void UIButton::Draw() {
     SDL_DestroyTexture(textTexture);
 
     SDL_SetRenderDrawColor(renderer,0,0,0,255);
-}
-
-void UIButton::HandleEvent(SDL_Event* m_event )
-{
-
 }

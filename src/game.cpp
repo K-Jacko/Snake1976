@@ -5,14 +5,10 @@
 #include "SDL_image.h"
 #include "SDL_ttf.h"
 
-UIButton button;
+bool Game::running;
+
 Game::Game(){
     running = true;
-    sceneManager = SceneManager();
-    windowLayer = WindowLayer();
-    inputLayer = InputLayer();
-    gridLayer  = GridLayer();
-    uiLayer = UILayer();
 }
 Game::~Game() = default;
 void Game::Init() {
@@ -29,11 +25,11 @@ void Game::InitMainSystems() {
     else{std::cout << "Text :: Systems Initialised!" << std::endl;}
 }
 void Game::InitSubSystems() {
-    windowLayer.Instance().Init();
-    sceneManager.Instance().Init();
-    inputLayer.Instance().Init(&event);
-    gridLayer.Instance().Init(windowLayer.Instance().GetRenderer());
-    uiLayer.Instance().Init(windowLayer.Instance().GetRenderer());
+    WindowLayer::Instance().Init();
+    SceneManager::Instance().Init();
+    InputLayer::Instance().Init(&event);
+    GridLayer::Instance().Init();
+    UILayer::Instance().Init();
 }
 void Game::Event() {
     SDL_PollEvent(&event);
@@ -50,18 +46,18 @@ void Game::Event() {
     }
 }
 void Game::Update() {
-    inputLayer.Instance().Update();
-    gridLayer.Instance().Update();
-    uiLayer.Instance().Update(inputLayer);
+    InputLayer::Instance().Update();
+    GridLayer::Instance().Update();
+    UILayer::Instance().Update();
 }
 void Game::Draw() {
-    SDL_RenderClear(windowLayer.Instance().GetRenderer());
-    gridLayer.Instance().Draw();
-    uiLayer.Instance().Draw();
-    SDL_RenderPresent(windowLayer.Instance().GetRenderer());
+    SDL_RenderClear(WindowLayer::Instance().GetRenderer());
+    GridLayer::Instance().Draw();
+    UILayer::Instance().Draw();
+    SDL_RenderPresent(WindowLayer::Instance().GetRenderer());
 }
 
-bool Game::isRunning() const {
+bool Game::isRunning() {
     return running;
 }
 void Game::End() {

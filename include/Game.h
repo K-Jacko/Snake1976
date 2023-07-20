@@ -4,7 +4,7 @@
 #include "WindowLayer.h"
 #include "GridLayer.h"
 #include "Buttons.h"
-#include "UILayer.h"
+#include "GUI/UILayer.h"
 #include <SDL.h>
 
 class Game
@@ -16,16 +16,11 @@ public:
     static void InitMainSystems();
     void InitSubSystems();
     void Event();
-    void Update();
-    void Draw();
-    void End();
-    [[nodiscard]] bool isRunning() const;
+    static void Update();
+    static void Draw();
+    static void End();
+    static bool isRunning();
     SDL_Event event{};
 private:
-    bool running;
-    SceneManager sceneManager;
-    WindowLayer windowLayer;
-    InputLayer inputLayer;
-    GridLayer gridLayer;
-    UILayer uiLayer;
+    static bool running;
 };

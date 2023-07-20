@@ -1,29 +1,18 @@
 #pragma once
 #include "Global.h"
+#include "Grid.h"
+
 class GridLayer
 {
 public:
     GridLayer();
-    GridLayer& Instance();
-    void Init(SDL_Renderer* m_renderer);
+    ~GridLayer();
+    static GridLayer& Instance();
+    void Init();
     void Update();
     void Draw();
-    int GetWidth()
-    {
-        return width;
-    }
-    int GetHeight()
-    {
-        return height;
-    }
-    int GetCellSize()
-    {
-        return cellSize;
-    }
+
 private:
-    int width;
-    int height;
-    int cellSize;
+    Grid* mainGrid;
     SDL_Renderer* renderer;
-    std::vector<GLOBAL::MATH::Vector2D> cells;
 };

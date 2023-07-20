@@ -6,7 +6,7 @@ class WindowLayer
 public:
     WindowLayer();
     ~WindowLayer();
-    WindowLayer& Instance();
+    static WindowLayer& Instance();
     void Init();
     SDL_Window* CreateWindow();
     SDL_Renderer* CreateRenderer();

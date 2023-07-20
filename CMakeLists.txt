@@ -29,7 +29,7 @@ link_directories(${SDL_INCLUDE_DIR} ${SDL_TTF_INCLUDE_DIR} ${SDL_IMAGE_INCLUDE_D
 
 include_directories(${SDL_INCLUDE_DIR} ${SDL_TTF_INCLUDE_DIR} ${SDL_IMAGE_INCLUDE_DIR} include src)
 
-file(GLOB SOURCES "src/*.cpp" "include/*.h")
+file(GLOB SOURCES "src/*.cpp" "include/*.h" "include/snake1976/*.h")
 add_executable(Snake1976 ${SOURCES})
 add_custom_target(copy_resources ALL
         COMMAND ${CMAKE_COMMAND} -E copy_directory
