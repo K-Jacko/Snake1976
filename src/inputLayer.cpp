@@ -100,36 +100,30 @@ void InputLayer::AddInput(int m_mouseInput) {
 }
 void InputLayer::AddInput(GLOBAL::GAME::Direction m_Direction) {
     auto vector = new GLOBAL::MATH::Vector2D(m_Direction);
-    if(keyInputs.size() < 2)
-    {
+    if(keyInputs.size() < 2){
         keyInputs.push_back(vector);
     }
 }
 
-void InputLayer::RemoveMouseInput(int m_mouseInput)
-{
+void InputLayer::RemoveMouseInput(int m_mouseInput) {
     auto input = m_mouseInput;
     mouseInputs.erase(std::remove_if(mouseInputs.begin(), mouseInputs.end(), [&](int v) {return matchesTarget(v,input);}), mouseInputs.end());
 
 }
-void InputLayer::RemoveKeyInput(GLOBAL::GAME::Direction m_direction)
-{
+void InputLayer::RemoveKeyInput(GLOBAL::GAME::Direction m_direction){
     auto vector = new GLOBAL::MATH::Vector2D(m_direction);
     keyInputs.erase(std::remove_if(keyInputs.begin(), keyInputs.end(), [&](GLOBAL::MATH::Vector2D* v) {return matchesTarget(*v, *vector);}), keyInputs.end());
 }
-bool InputLayer::matchesTarget(int _i, int _j)
-{
+bool InputLayer::matchesTarget(int _i, int _j) {
     return _i == _j;
 }
-bool InputLayer::matchesTarget(GLOBAL::MATH::Vector2D v, GLOBAL::MATH::Vector2D t)
-{
+bool InputLayer::matchesTarget(GLOBAL::MATH::Vector2D v, GLOBAL::MATH::Vector2D t){
     return v.x == t.x && v.y == t.y;
 }
-
 bool InputLayer::LeftIsPressed() {
     return isPressedLeft;
 }
 
-bool InputLayer::RightIsPressed(){
+bool InputLayer::RightIsPressed() {
     return isPressedRight;
 }

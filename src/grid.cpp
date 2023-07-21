@@ -1,18 +1,15 @@
 #include "Grid.h"
 #include "InputLayer.h"
+#include "WindowLayer.h"
 
-Grid::Grid(int m_W, int m_H, int m_cellSize, SDL_Renderer* m_renderer){
-    renderer = m_renderer;
-    width = m_W;
-    height = m_H;
-    cellSize = m_cellSize;
-    CreateGrid();
+Grid::Grid() {
+    renderer = WindowLayer::Instance().GetRenderer();
 }
 Grid::~Grid() {
     cells.clear();
     cells.shrink_to_fit();
 }
-void Grid::CreateGrid(){
+void Grid::CreateGrid() {
 
     int pixelsX = width * cellSize;
     int pixelsY = height * cellSize;
@@ -27,8 +24,7 @@ void Grid::CreateGrid(){
         }
     }
 }
-void Grid::Update()
-{
+void Grid::Update() {
 
 }
 void Grid::DrawGrid() {
@@ -37,6 +33,24 @@ void Grid::DrawGrid() {
             DrawCell(cell);
         }
     }
+
+    // Top border
+    SDL_Rect topBorder = {0, 0, GLOBAL::SCREEN::SCREEN_WIDTH, GLOBAL::SCREEN::BORDER_SIZE };
+    SDL_RenderFillRect(renderer, &topBorder);
+
+    // Bottom border
+    SDL_Rect bottomBorder = {0, GLOBAL::SCREEN::SCREEN_HEIGHT - GLOBAL::SCREEN::BORDER_SIZE, GLOBAL::SCREEN::SCREEN_WIDTH, GLOBAL::SCREEN::BORDER_SIZE};
+    SDL_RenderFillRect(renderer, &bottomBorder);
+
+    // Left border
+    SDL_Rect leftBorder = {0, GLOBAL::SCREEN::BORDER_SIZE, GLOBAL::SCREEN::BORDER_SIZE, GLOBAL::SCREEN::SCREEN_HEIGHT - 2 * GLOBAL::SCREEN::BORDER_SIZE };
+    SDL_RenderFillRect(renderer, &leftBorder);
+
+    // Right border
+    SDL_Rect rightBorder = {GLOBAL::SCREEN::SCREEN_WIDTH - GLOBAL::SCREEN::BORDER_SIZE, GLOBAL::SCREEN::BORDER_SIZE, GLOBAL::SCREEN::BORDER_SIZE, GLOBAL::SCREEN::SCREEN_HEIGHT - 2 * GLOBAL::SCREEN::BORDER_SIZE };
+    SDL_RenderFillRect(renderer, &rightBorder);
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+
 }
 void Grid::FillCell(Cell* cell){
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 225);
@@ -61,6 +75,14 @@ void Grid::DrawCell(Cell *cell) {
     {
         FillCell(FindCell());
     }
+}
+void Grid::Reset(int m_W, int m_H, int m_cellSize){
+    cells.clear();
+    cells.shrink_to_fit();
+    width = m_W;
+    height = m_H;
+    cellSize = m_cellSize;
+    CreateGrid();
 }
 Cell* Grid::FindCell() {
 

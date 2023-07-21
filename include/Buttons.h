@@ -1,11 +1,7 @@
 #pragma once
 #include "Global.h"
+#include "Text.h"
 
-enum ButtonState{
-    NORMAL = 0,
-    HOVER = 1,
-    PRESSED = 2
-};
 enum ButtonSize
 {
     Tiny,
@@ -21,11 +17,11 @@ public:
     void SetSize(ButtonSize m_size);
     virtual void Update();
     virtual void Draw();
+    SDL_Rect shape;
 protected:
-    ButtonState buttonState;
+    GLOBAL::GAME::InteractionStatus buttonState;
     SDL_Renderer* renderer;
     SDL_Point position;
-    SDL_Rect shape;
     int width, height;
     bool isPressed;
     void(*action)();
@@ -34,13 +30,9 @@ class TextButton : public Button
 {
 public:
     TextButton();
-    TextButton(int m_x, int m_y, ButtonSize m_size, const char* m_text, GLOBAL::SCREEN::FONT_SIZE fontSize, void(*m_action)());
+    TextButton(int m_x, int m_y, ButtonSize m_size, const char* m_text, GLOBAL::SCREEN::FONT_SIZE m_fontSize, void(*m_action)());
+    void Update() override;
     void Draw() override;
+    Text* text;
 private:
-    const char* text;
-    SDL_Rect textRect{};
-    int fontSize;
-    SDL_Surface* textSurface{};
-    SDL_Texture* textTexture{};
-    TTF_Font* font;
 };

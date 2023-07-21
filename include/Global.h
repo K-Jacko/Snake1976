@@ -22,7 +22,11 @@ namespace GLOBAL
             NONE,UP,DOWN,LEFT,RIGHT
         };
 
-
+        enum InteractionStatus{
+            NORMAL = 0,
+            HOVER = 1,
+            PRESSED = 2
+        };
     }
     namespace SCREEN{
         //int ScreenfFlags = SDL_WINDOW_BORDERLESS;

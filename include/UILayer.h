@@ -11,11 +11,14 @@ public:
     void Update();
     void Draw();
     static void Reset();
+    void CreateButtons();
+    void AddTextToVector(Text m_text);
     static void LoadFirstScene();
     static void LoadSecondScene();
     static void LoadHighScoreScene();
 private:
     static std::vector<TextButton*> uiButtons;
+    static std::vector<Text*> texts;
     static TextButton* button1;
     static TextButton* button2;
     static TextButton* button3;
