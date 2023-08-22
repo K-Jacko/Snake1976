@@ -1,6 +1,7 @@
 #pragma once
 #include "Global.h"
 #include "Buttons.h"
+#include "snake1976/Snake.h"
 
 class UILayer
 {
@@ -11,19 +12,16 @@ public:
     void Update();
     void Draw();
     static void Reset();
-    void CreateButtons();
+    void CreateTextButtons(std::vector<GLOBAL::UI::TextButtonData> textButtonData);
+    std::vector<TextButton*> GetTextButtons();
     void AddTextToVector(Text m_text);
     static void LoadFirstScene();
     static void LoadSecondScene();
     static void LoadHighScoreScene();
 private:
-    static std::vector<TextButton*> uiButtons;
+    static std::vector<TextButton*> textButtons;
     static std::vector<Text*> texts;
-    static TextButton* button1;
-    static TextButton* button2;
-    static TextButton* button3;
-    static TextButton* button4;
-    static TextButton* button5;
+
 };
 
 //width/2 , height * 0.22f,

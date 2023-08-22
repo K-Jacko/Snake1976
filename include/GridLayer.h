@@ -7,13 +7,11 @@ class GridLayer
 public:
     GridLayer();
     ~GridLayer();
-    static GridLayer& Instance();
     void Init();
     void Update();
     void Draw();
-    void Reset();
     void LoadNewGrid(int m_x, int m_y, int m_cellSize);
-private:
     Grid* mainGrid;
+private:
     SDL_Renderer* renderer;
 };

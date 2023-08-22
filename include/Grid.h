@@ -4,6 +4,7 @@
 class Cell
 {
 public:
+    Cell();
     Cell(int m_x, int m_y);
     GLOBAL::MATH::Vector2D position;
 private:
@@ -18,12 +19,14 @@ public:
     virtual void DrawGrid();
     virtual void Update();
     void Reset(int m_W, int m_H, int m_cellSize);
-    std::vector<Cell*> cells;
-protected:
+    void FillCell(Cell* cell);
+    void FillCellByPosition(GLOBAL::MATH::Vector2D m_Position);
     virtual void CreateGrid();
+protected:
     virtual void DrawCell(Cell* cell);
     Cell* FindCell();
-    void FillCell(Cell* cell);
     int width,height,cellSize,offSetX,offSetY;
     SDL_Renderer* renderer;
+private:
+    std::vector<Cell*> cells;
 };

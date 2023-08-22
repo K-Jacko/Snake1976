@@ -1,26 +1,29 @@
 #pragma once
 #include "SceneManager.h"
 #include "WindowLayer.h"
-
-struct Scene
-{
-    Scene();
-    void OnEnter();
-    void OnExit();
-private:
+#include "UILayer.h"
+#include "GridLayer.h"
 
 
-
-
-};
+struct MenuScene;
+struct GameScene;
+struct HighScoreScene;
+struct Scene;
 
 class SceneManager
 {
 public:
     static SceneManager& Instance();
     SceneManager();
-    void ChangeScene();
-    void LoadScene();
     void Init();
-    Scene currentScene;
+    void Update();
+    void Draw();
+    static void GoToHighScore();
+    static void GoToMenu();
+    static void GoToGame();
+    //void LoadScene(Scene* m_Scene);
+    static Scene* currentScene;
+    static MenuScene* menuScene;
+    static GameScene* gameScene;
+    static HighScoreScene* highScoreScene;
 };

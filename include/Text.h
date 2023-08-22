@@ -13,11 +13,11 @@ public:
 private:
     const char* string;
     SDL_Renderer* renderer;
-    SDL_Rect boxRect;
+    SDL_Rect boxRect = SDL_Rect(1,10,10,10);
     SDL_Rect textRect{};
     int fontSize;
     SDL_Surface* textSurface{};
     SDL_Texture* textTexture{};
     TTF_Font* font;
-    SDL_Color textColor;
+    SDL_Color textColor = SDL_Color(0,0,0,0);
 };

@@ -3,8 +3,10 @@
 #include <SDL.h>
 #include "SDL_image.h"
 #include "SDL_ttf.h"
+#include "SceneManager.h"
 
 bool Game::running;
+WindowLayer* windowLayer;
 
 Game::Game(){
     running = true;
@@ -29,10 +31,8 @@ void Game::InitMainSystems() {
 }
 void Game::InitSubSystems() {
     WindowLayer::Instance().Init();
-    SceneManager::Instance().Init();
     InputLayer::Instance().Init(&event);
-    GridLayer::Instance().Init();
-    UILayer::Instance().Init();
+    SceneManager::Instance().Init();
 }
 void Game::Event() {
     SDL_PollEvent(&event);
@@ -50,14 +50,13 @@ void Game::Event() {
 }
 void Game::Update() {
     InputLayer::Instance().Update();
-    GridLayer::Instance().Update();
-    UILayer::Instance().Update();
+    SceneManager::Instance().Update();
 }
 void Game::Draw() {
     SDL_RenderClear(WindowLayer::Instance().GetRenderer());
-    GridLayer::Instance().Draw();
-    UILayer::Instance().Draw();
+    SceneManager::Instance().Draw();
     SDL_RenderPresent(WindowLayer::Instance().GetRenderer());
+
 }
 
 bool Game::isRunning() {

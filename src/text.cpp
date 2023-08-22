@@ -12,6 +12,7 @@ Text::Text(GLOBAL::SCREEN::FONT_SIZE m_fontSize, const char* m_text, SDL_Rect m_
         SDL_Log("Failed to load font: %s", TTF_GetError());
     }
     boxRect = m_Box;
+    interactionStatus = GLOBAL::GAME::InteractionStatus::NORMAL;
 }
 
 void Text::LoadText() {

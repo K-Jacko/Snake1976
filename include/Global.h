@@ -29,7 +29,6 @@ namespace GLOBAL
         };
     }
     namespace SCREEN{
-        //int ScreenfFlags = SDL_WINDOW_BORDERLESS;
         constexpr float CAMERA_FOLLOW_SPEED = 2;
         constexpr float CAMERA_LERP_SPEED = 0.125f;
 
@@ -50,10 +49,32 @@ namespace GLOBAL
             LARGE = 200
         };
 
+//        int ScreenfFlags = SDL_WINDOW_BORDERLESS;
 //        SDL_Color KPRIMARY_COLOR = { 0, 0, 0, 255 };
 //        SDL_Color KSECONDARY_COLOR = { 255, 255, 255, 255 };
-
-        //constexpr std::chrono::microseconds FRAME_DURATION(16667);
+//        constexpr std::chrono::microseconds FRAME_DURATION(16667);
+    }
+    namespace UI{
+        enum ButtonSize{
+            Tiny,
+            Small,
+            Medium,
+            Large
+        };
+        struct ButtonData{
+            ButtonData(int x, int y, GLOBAL::UI::ButtonSize size)
+            :XPosition(x),YPosition(y),Size(size){}
+            int XPosition, YPosition;
+            ButtonSize Size;
+        };
+        struct TextButtonData{
+            TextButtonData(int x, int y, ButtonSize size, const char* text, GLOBAL::SCREEN::FONT_SIZE fontSize)
+            :XPosition(x),YPosition(y),Size(size),Text(text),FontSize(fontSize){}
+            int XPosition, YPosition;
+            ButtonSize Size;
+            const char* Text;
+            SCREEN::FONT_SIZE FontSize;
+        };
     }
 
 

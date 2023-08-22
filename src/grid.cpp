@@ -62,6 +62,19 @@ void Grid::FillCell(Cell* cell){
     SDL_RenderFillRect(renderer, &rc);
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 }
+void Grid::FillCellByPosition(GLOBAL::MATH::Vector2D m_Position) {
+    // Make sure the grid coordinates are within bounds
+    if (m_Position.x >= 0 && m_Position.x < width && m_Position.y >= 0 && m_Position.y < height) {
+        SDL_SetRenderDrawColor(renderer, 255, 255, 255, 225);
+        SDL_Rect rc;
+        rc.x = offSetX + m_Position.x * cellSize;
+        rc.y = offSetY + m_Position.y * cellSize;
+        rc.w = cellSize;
+        rc.h = cellSize;
+        SDL_RenderFillRect(renderer, &rc);
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+    }
+}
 void Grid::DrawCell(Cell *cell) {
     SDL_SetRenderDrawColor(renderer, 100, 100, 100, 225);
     SDL_Rect rc;
@@ -104,6 +117,10 @@ Cell* Grid::FindCell() {
     }
 
     return new Cell(GLOBAL::SCREEN::SCREEN_WIDTH,GLOBAL::SCREEN::SCREEN_HEIGHT);
+}
+
+Cell::Cell(){
+    position = {0,0};
 }
 
 Cell::Cell(int m_x, int m_y) {
