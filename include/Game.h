@@ -5,6 +5,7 @@
 #include "GridLayer.h"
 #include "Buttons.h"
 #include "UILayer.h"
+#include "snake1976/Snake.h"
 #include <SDL.h>
 
 class Game

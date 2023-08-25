@@ -97,7 +97,6 @@ TextButton::TextButton(GLOBAL::UI::TextButtonData m_data) {
 void TextButton::Update() {
     if(isActive){
         text->Update();
-        InputLayer& inputLayer = InputLayer::Instance();
         SDL_Point point;
         point.x = InputLayer::Instance().GetMousePosition().x;
         point.y = InputLayer::Instance().GetMousePosition().y;

@@ -34,7 +34,7 @@ void UILayer::Draw() {
         texts[i]->Draw();
     }
 //    if(snake != nullptr){
-//        snake->DrawSnake();
+//        snake->Draw();
 //    }
 }
 void UILayer::Reset() {

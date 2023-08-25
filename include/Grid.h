@@ -16,15 +16,15 @@ class Grid
 public:
     Grid();
     ~Grid();
-    virtual void DrawGrid();
-    virtual void Update();
+    void Draw();
+    void Update();
     void Reset(int m_W, int m_H, int m_cellSize);
     void FillCell(Cell* cell);
-    void FillCellByPosition(GLOBAL::MATH::Vector2D m_Position);
-    virtual void CreateGrid();
+    void CreateGrid();
+    int GetCellSize();
+    Cell* FindCell(GLOBAL::MATH::Vector2D m_position);
 protected:
     virtual void DrawCell(Cell* cell);
-    Cell* FindCell();
     int width,height,cellSize,offSetX,offSetY;
     SDL_Renderer* renderer;
 private:

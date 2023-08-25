@@ -1,5 +1,8 @@
 #pragma once
-#include "Grid.h"
+#include "GridLayer.h"
+#include "InputLayer.h"
+#include "Timer.h"
+
 enum SnakeCellType{
     OFF,
     HEAD,
@@ -17,15 +20,16 @@ public:
 class Snake
 {
 public:
-    Snake();
+    Snake(Grid* m_grid);
     ~Snake();
-    void DrawSnake();
+    void Draw();
     void Update();
 private:
-    void CreateGrid();
-    void DrawCell(Cell* cell);
-    void DrawSnakeCell(SnakeCell* cell);
-    std::vector<GLOBAL::MATH::Vector2D> positions;
-    SnakeCell* head;
+    GLOBAL::MATH::Vector2D* GetInput();
+    Timer timer;
+    int snakeLength = 7;
+    Grid* grid;
+    InputLayer* input;
+    std::vector<SnakeCell*> cells;
 };
 

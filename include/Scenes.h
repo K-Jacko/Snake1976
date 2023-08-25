@@ -78,15 +78,19 @@ struct GameScene : public Scene {
             gridLayer = new GridLayer();
             gridLayer->LoadNewGrid(30,40,24);
         }
+        snake = new Snake(gridLayer->mainGrid);
     }
+    Snake* snake;
     void Update() override{
         gridLayer->Update();
         uILayer->Update();
+        snake->Update();
 
     }
     void Draw() override{
         gridLayer->Draw();
         uILayer->Draw();
+        snake->Draw();
 
     }
     void OnExit() override{

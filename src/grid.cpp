@@ -4,6 +4,7 @@
 
 Grid::Grid() {
     renderer = WindowLayer::Instance().GetRenderer();
+    cellSize = GLOBAL::SCREEN::CELL_SIZE;
 }
 Grid::~Grid() {
     cells.clear();
@@ -27,7 +28,7 @@ void Grid::CreateGrid() {
 void Grid::Update() {
 
 }
-void Grid::DrawGrid() {
+void Grid::Draw() {
     if(cells.size() > 1){
         for(Cell* cell:cells){
             DrawCell(cell);
@@ -62,21 +63,9 @@ void Grid::FillCell(Cell* cell){
     SDL_RenderFillRect(renderer, &rc);
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 }
-void Grid::FillCellByPosition(GLOBAL::MATH::Vector2D m_Position) {
-    // Make sure the grid coordinates are within bounds
-    if (m_Position.x >= 0 && m_Position.x < width && m_Position.y >= 0 && m_Position.y < height) {
-        SDL_SetRenderDrawColor(renderer, 255, 255, 255, 225);
-        SDL_Rect rc;
-        rc.x = offSetX + m_Position.x * cellSize;
-        rc.y = offSetY + m_Position.y * cellSize;
-        rc.w = cellSize;
-        rc.h = cellSize;
-        SDL_RenderFillRect(renderer, &rc);
-        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-    }
-}
+
 void Grid::DrawCell(Cell *cell) {
-    SDL_SetRenderDrawColor(renderer, 100, 100, 100, 225);
+    SDL_SetRenderDrawColor(renderer, 155, 155, 155, 225);
     SDL_Rect rc;
     rc.x = cell->position.x;
     rc.y = cell->position.y;
@@ -86,7 +75,7 @@ void Grid::DrawCell(Cell *cell) {
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     if(InputLayer::Instance().LeftIsPressed())
     {
-        FillCell(FindCell());
+        FillCell(FindCell(GLOBAL::MATH::Vector2D(InputLayer::Instance().GetMousePosition().x,InputLayer::Instance().GetMousePosition().y)));
     }
 }
 void Grid::Reset(int m_W, int m_H, int m_cellSize){
@@ -97,16 +86,16 @@ void Grid::Reset(int m_W, int m_H, int m_cellSize){
     cellSize = m_cellSize;
     CreateGrid();
 }
-Cell* Grid::FindCell() {
+Cell* Grid::FindCell(GLOBAL::MATH::Vector2D m_position) {
 
-    int mouseX = InputLayer::Instance().GetMousePosition().x;
-    int mouseY = InputLayer::Instance().GetMousePosition().y;
+    int x = m_position.x;
+    int y = m_position.y;
 
-    if (mouseX >= offSetX && mouseX < offSetX + width * cellSize &&
-        mouseY >= offSetY && mouseY < offSetY + height * cellSize) {
+    if (x >= offSetX && x < offSetX + width * cellSize &&
+        y >= offSetY && y < offSetY + height * cellSize) {
 
-        int gridX = (mouseX - offSetX) / cellSize;
-        int gridY = (mouseY - offSetY) / cellSize;
+        int gridX = (x - offSetX) / cellSize;
+        int gridY = (y - offSetY) / cellSize;
 
         for (auto &cell : cells) {
             if (cell->position.x == offSetX + gridX * cellSize && cell->position.y == offSetY + gridY * cellSize) {
@@ -117,6 +106,10 @@ Cell* Grid::FindCell() {
     }
 
     return new Cell(GLOBAL::SCREEN::SCREEN_WIDTH,GLOBAL::SCREEN::SCREEN_HEIGHT);
+}
+
+int Grid::GetCellSize() {
+    return cellSize;
 }
 
 Cell::Cell(){

@@ -17,7 +17,7 @@ void GridLayer::Update() {
 void GridLayer::Draw() {
 
     if(mainGrid != nullptr){
-        mainGrid->DrawGrid();
+        mainGrid->Draw();
     }
 }
 void GridLayer::LoadNewGrid(int m_x, int m_y, int m_cellSize){
