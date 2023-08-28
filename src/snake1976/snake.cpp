@@ -1,5 +1,6 @@
 #include "snake1976/Snake.h"
 #include "GridLayer.h"
+#include <random>
 #include <chrono>
 
 Snake::Snake(Grid* m_grid) {
@@ -22,17 +23,23 @@ Snake::~Snake() {
     cells.shrink_to_fit();
 }
 void Snake::Draw() {
-    for (int i = 0; i < cells.size(); ++i) {
-        grid->FillCell(grid->FindCell(cells[i]->position));
+    grid->FillCell(grid->FindCell(cells[0]->position),SDL_Color(255,0,0));
+    for (int i = 1; i < cells.size(); ++i) {
+        grid->FillCell(grid->FindCell(cells[i]->position),SDL_Color(255,255,255));
+    }
+    if(InputLayer::Instance().LeftIsPressed())
+    {
+        grid->FillCell(grid->FindCell(GLOBAL::MATH::Vector2D(InputLayer::Instance().GetMousePosition().x,InputLayer::Instance().GetMousePosition().y)),SDL_Color(255,255,255));
     }
 }
 void Snake::Update() {
-    timer.Reset();
-    if(timer.Elapsed() >= 1.0){
-        for (int i = snakeLength - 1; i > 1; i--) {
+
+    if(timer.Elapsed() >= 2.0){
+        for (int i = snakeLength - 1; i > 0; i--) {
             cells[i]->position = cells[i - 1]->position;
         }
-        cells[0]->position += GLOBAL::MATH::Vector2D(GetInput()->x,GetInput()->y);
+        cells[0]->position.Add(GetInput());
+
         timer.Reset();
     }
 
@@ -51,20 +58,25 @@ void Snake::Update() {
 //
 //    }
 }
-GLOBAL::MATH::Vector2D* Snake::GetInput() {
-    GLOBAL::MATH::Vector2D* storedDirection;
+GLOBAL::MATH::Vector2D Snake::GetInput() {
+    GLOBAL::MATH::Vector2D foo;
     if(!input->GetKeyInputs().empty())
     {
-        storedDirection = input->GetKeyInputs()[0];
-        return storedDirection;
+        auto Direction = GLOBAL::MATH::Vector2D(input->GetKeyInputs()[0]->x,input->GetKeyInputs()[0]->y);
+        foo = Direction;
+        return Direction;
 
     }else{
-        return new GLOBAL::MATH::Vector2D(0,-1);
+        return foo.x != 0 ? foo : GLOBAL::MATH::Vector2D(0,-1);
     }
 }
 SnakeCell::SnakeCell() {
 
 }
 SnakeCell::SnakeCell(int m_x, int m_y) {
+
+}
+
+SnakeCell::~SnakeCell() {
 
 }

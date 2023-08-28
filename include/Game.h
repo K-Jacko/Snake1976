@@ -12,18 +12,16 @@ class Game
 {
 public:
     Game();
-    Game& Instance();
     ~Game();
-    void Init();
+    static void Init();
     static void InitMainSystems();
-    void InitSubSystems();
-    void Event();
+    static void InitSubSystems();
+    static void Event();
     static void Update();
     static void Draw();
     static void End();
-    static void LoadScenes();
     static bool isRunning();
-    SDL_Event event{};
+    static SDL_Event event;
 private:
     static bool running;
 };

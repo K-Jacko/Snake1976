@@ -1,5 +1,4 @@
 #include "SceneManager.h"
-#include "Game.h"
 #include "Scenes.h"
 
 MenuScene* SceneManager::menuScene;
@@ -8,9 +7,8 @@ HighScoreScene* SceneManager::highScoreScene;
 
 Scene* SceneManager::currentScene;
 
-SceneManager::SceneManager(){
+SceneManager::SceneManager()= default;
 
-}
 SceneManager& SceneManager::Instance() {
     static SceneManager sceneManager;
     return sceneManager;

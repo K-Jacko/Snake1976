@@ -55,6 +55,19 @@ void Grid::Draw() {
 }
 void Grid::FillCell(Cell* cell){
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 225);
+    auto foo = SDL_Color(255,255,255);
+    SDL_SetRenderDrawColor(renderer,foo.r,foo.g,foo.b,foo.a);
+    SDL_Rect rc;
+    rc.x = cell->position.x;
+    rc.y = cell->position.y;
+    rc.w = cellSize ;
+    rc.h = cellSize;
+    SDL_RenderFillRect(renderer, &rc);
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+}
+
+void Grid::FillCell(Cell *cell, SDL_Color color) {
+    SDL_SetRenderDrawColor(renderer,color.r,color.g,color.b,color.a);
     SDL_Rect rc;
     rc.x = cell->position.x;
     rc.y = cell->position.y;
@@ -73,10 +86,6 @@ void Grid::DrawCell(Cell *cell) {
     rc.h = cellSize;
     SDL_RenderDrawRect(renderer, &rc);
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-    if(InputLayer::Instance().LeftIsPressed())
-    {
-        FillCell(FindCell(GLOBAL::MATH::Vector2D(InputLayer::Instance().GetMousePosition().x,InputLayer::Instance().GetMousePosition().y)));
-    }
 }
 void Grid::Reset(int m_W, int m_H, int m_cellSize){
     cells.clear();

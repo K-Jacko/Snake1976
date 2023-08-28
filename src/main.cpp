@@ -1,19 +1,14 @@
 #include <iostream>
 #include "Game.h"
-Game* game = nullptr;
 
 int main(int argc, char* args[]) {
     SDL_SetMainReady();
-    Uint32 startTime = SDL_GetTicks();
-    game = new Game();
-    game->Init();
-    while(game->isRunning())
+    Game::Init();
+    while(Game::isRunning())
     {
-        Uint32 currentTime = SDL_GetTicks();
-        float deltaTime = (currentTime - startTime) / 1000.0f;
-        game->Event();
-        game->Update();
-        game->Draw();
+        Game::Event();
+        Game::Update();
+        Game::Draw();
     }
     return 0;
 }

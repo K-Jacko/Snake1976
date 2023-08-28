@@ -20,12 +20,12 @@ public:
 class Snake
 {
 public:
-    Snake(Grid* m_grid);
+    explicit Snake(Grid* m_grid);
     ~Snake();
     void Draw();
     void Update();
 private:
-    GLOBAL::MATH::Vector2D* GetInput();
+    GLOBAL::MATH::Vector2D GetInput();
     Timer timer;
     int snakeLength = 7;
     Grid* grid;

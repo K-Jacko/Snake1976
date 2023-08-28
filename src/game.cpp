@@ -6,20 +6,16 @@
 #include "SceneManager.h"
 
 bool Game::running;
-WindowLayer* windowLayer;
+SDL_Event Game::event;
 
 Game::Game(){
     running = true;
 }
 Game::~Game() = default;
-Game& Game::Instance() {
-    static Game game;
-    return game;
-}
+
 void Game::Init() {
     InitMainSystems();
     InitSubSystems();
-
 }
 void Game::InitMainSystems() {
     if(SDL_Init(SDL_INIT_VIDEO) < 0){std::cout << "ERROR" << SDL_GetError() << std::endl;}
@@ -58,12 +54,13 @@ void Game::Draw() {
     SDL_RenderPresent(WindowLayer::Instance().GetRenderer());
 
 }
-
 bool Game::isRunning() {
     return running;
 }
 void Game::End() {
     SDL_Quit();
-    std::cout << "GAME Cleared" << std::endl;
+    std::cout << "Game Cleared" << std::endl;
     running = false;
 }
+
+
