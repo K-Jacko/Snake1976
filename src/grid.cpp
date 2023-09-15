@@ -86,8 +86,4 @@ Cell* Grid::FindCell(GLOBAL::MATH::Vector2D m_position) {
     return new Cell(0,0);
 }
 
-int Grid::GetCellSize() const {
-    return cellSize;
-}
-
 

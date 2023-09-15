@@ -9,8 +9,10 @@ public:
     ~Grid();
     void Draw();
     void Update();
+    int GetWidth(){return width;}
+    int GetHeight(){return height;}
     void FillCell(Cell* cell, SDL_Color color);
-    int GetCellSize() const;
+    int GetCellSize(){return cellSize;}
     Cell* FindCell(GLOBAL::MATH::Vector2D m_position);
 protected:
     int width,height,cellSize,offSetX,offSetY;

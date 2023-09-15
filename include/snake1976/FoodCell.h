@@ -1,15 +1,14 @@
 #pragma once
 #include "Global.h"
 
-enum FoodType{
-    Apple,
-    Orange,
-    Other
-};
-
 class FoodCell{
 public:
     GLOBAL::MATH::Vector2D position;
-private:
+    void Update(){
 
+    };
+private:
+    //On spawn Check within bounds
+    //On spawn Check Not on snakes body
+    //On Update Check if OnHead
 };

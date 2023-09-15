@@ -14,7 +14,4 @@ public:
     SnakeCell(int m_x, int m_y){};
     ~SnakeCell()= default;
     SnakeCellType cellType{};
-    //On spawn Check within bounds
-    //On spawn Check Not on snakes body
-    //On Update Check if OnHead
 };
