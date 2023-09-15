@@ -75,6 +75,13 @@ namespace GLOBAL
             const char* Text;
             SCREEN::FONT_SIZE FontSize;
         };
+        struct TextData{
+            TextData(int x, int y, const char* text, GLOBAL::SCREEN::FONT_SIZE fontSize)
+            :XPosition(x), YPosition(y), Text(text), FontSize(fontSize){}
+            int XPosition, YPosition;
+            const char* Text;
+            SCREEN::FONT_SIZE FontSize;
+        };
     }
 
 

@@ -21,9 +21,8 @@ public:
     static void GoToHighScore();
     static void GoToMenu();
     static void GoToGame();
-    //void LoadScene(Scene* m_Scene);
     static Scene* currentScene;
-    static MenuScene* menuScene;
-    static GameScene* gameScene;
-    static HighScoreScene* highScoreScene;
+    static MenuScene menuScene;
+    static GameScene gameScene;
+    static HighScoreScene highScoreScene;
 };

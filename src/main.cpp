@@ -3,6 +3,7 @@
 
 int main(int argc, char* args[]) {
     SDL_SetMainReady();
+    auto game = new Game();
     Game::Init();
     while(Game::isRunning())
     {

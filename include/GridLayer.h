@@ -7,6 +7,7 @@ class GridLayer
 public:
     GridLayer();
     ~GridLayer();
+    static GridLayer& Instance();
     void Init();
     void Update();
     void Draw();

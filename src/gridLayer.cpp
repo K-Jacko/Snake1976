@@ -3,10 +3,13 @@
 #include "GridLayer.h"
 
 GridLayer::GridLayer() {
-    mainGrid = new Grid();
+    mainGrid = new Grid(0,0,0);
 }
 GridLayer::~GridLayer() {
-    mainGrid = nullptr;
+}
+GridLayer &GridLayer::Instance() {
+    static GridLayer instance;
+    return instance;
 }
 void GridLayer::Init() {
 
@@ -15,11 +18,11 @@ void GridLayer::Update() {
 
 }
 void GridLayer::Draw() {
-
-    if(mainGrid != nullptr){
         mainGrid->Draw();
-    }
 }
 void GridLayer::LoadNewGrid(int m_x, int m_y, int m_cellSize){
-    mainGrid->Reset(m_x,m_y,m_cellSize);
+    delete(mainGrid);
+    mainGrid = new Grid(m_x,m_y,m_cellSize);
 }
+
+

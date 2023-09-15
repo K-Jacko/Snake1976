@@ -5,12 +5,15 @@ class Text
 {
 public:
     Text(GLOBAL::SCREEN::FONT_SIZE m_fontSize, const char* m_text, SDL_Rect m_Box);
-    void LoadText();
+    Text(GLOBAL::UI::TextData textData);
+    void SetActive(bool active);
     void Update();
     void Draw();
     void Reset();
     GLOBAL::GAME::InteractionStatus interactionStatus;
 private:
+    bool isInteractable = false;
+    bool isActive = true;
     const char* string;
     SDL_Renderer* renderer;
     SDL_Rect boxRect = SDL_Rect(1,10,10,10);

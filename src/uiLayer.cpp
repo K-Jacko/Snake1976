@@ -12,26 +12,24 @@ UILayer& UILayer::Instance() {
     static UILayer uiLayer;
     return uiLayer;
 }
-UILayer::~UILayer() {
-
-}
+UILayer::~UILayer() = default;
 void UILayer::Init() {
 
 }
 void UILayer::Update() {
-    for (int i = 0; i < textButtons.size(); ++i) {
-        textButtons[i]->Update();
+    for (auto & textButton : textButtons) {
+        textButton->Update();
     }
-    for (int i = 0; i < texts.size(); ++i) {
-        texts[i]->Update();
+    for (auto & text : texts) {
+        text->Update();
     }
 }
 void UILayer::Draw() {
-    for (int i = 0; i < textButtons.size(); ++i) {
-        textButtons[i]->Draw();
+    for (auto & textButton : textButtons) {
+        textButton->Draw();
     }
-    for (int i = 0; i < texts.size(); ++i) {
-        texts[i]->Draw();
+    for (auto & text : texts) {
+        text->Draw();
     }
 //    if(snake != nullptr){
 //        snake->Draw();
@@ -41,10 +39,16 @@ void UILayer::Reset() {
 
 }
 
-void UILayer::CreateTextButtons(std::vector<GLOBAL::UI::TextButtonData> textButtonData) {
-    for (int i = 0; i < textButtonData.size(); ++i) {
-        auto button = new TextButton(textButtonData[i]);
+void UILayer::CreateTextButtons(const std::vector<GLOBAL::UI::TextButtonData>& textButtonData) {
+    for (const auto & i : textButtonData) {
+        auto button = new TextButton(i);
         textButtons.push_back(button);
+    }
+}
+void UILayer::CreateText(const std::vector<GLOBAL::UI::TextData>& textData) {
+    for (const auto & i : textData) {
+        auto text = new Text(i);
+        texts.push_back(text);
     }
 }
 void UILayer::AddTextToVector(Text m_text) {
@@ -64,3 +68,9 @@ void UILayer::LoadHighScoreScene(){
 std::vector<TextButton*> UILayer::GetTextButtons() {
     return textButtons;
 }
+
+std::vector<Text *> UILayer::GetText() {
+    return texts;
+}
+
+

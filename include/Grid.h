@@ -1,31 +1,18 @@
 #pragma once
 #include "Global.h"
-
-class Cell
-{
-public:
-    Cell();
-    Cell(int m_x, int m_y);
-    GLOBAL::MATH::Vector2D position;
-private:
-
-};
+#include "Cell.h"
 
 class Grid
 {
 public:
-    Grid();
+    Grid(int m_W, int m_H, int m_cellSize);
     ~Grid();
     void Draw();
     void Update();
-    void Reset(int m_W, int m_H, int m_cellSize);
-    void FillCell(Cell* cell);
     void FillCell(Cell* cell, SDL_Color color);
-    void CreateGrid();
-    int GetCellSize();
+    int GetCellSize() const;
     Cell* FindCell(GLOBAL::MATH::Vector2D m_position);
 protected:
-    virtual void DrawCell(Cell* cell);
     int width,height,cellSize,offSetX,offSetY;
     SDL_Renderer* renderer;
 private:

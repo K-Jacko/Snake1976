@@ -9,11 +9,13 @@ public:
     static UILayer& Instance();
     ~UILayer();
     void Init();
-    void Update();
-    void Draw();
+    static void Update();
+    static void Draw();
     static void Reset();
-    void CreateTextButtons(std::vector<GLOBAL::UI::TextButtonData> textButtonData);
-    std::vector<TextButton*> GetTextButtons();
+    static void CreateTextButtons(const std::vector<GLOBAL::UI::TextButtonData>& textButtonData);
+    static void CreateText(const std::vector<GLOBAL::UI::TextData>& textData);
+    static std::vector<TextButton*> GetTextButtons();
+    static std::vector<Text*> GetText();
     void AddTextToVector(Text m_text);
     static void LoadFirstScene();
     static void LoadSecondScene();

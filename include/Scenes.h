@@ -11,133 +11,134 @@ struct Scene
     virtual void Update(){}
     virtual void Init(){}
     virtual void Refresh(){}
-    UILayer* uILayer;
-    GridLayer* gridLayer;
+    bool isInitialized;
 };
 
 struct MenuScene : public Scene  {
     MenuScene() = default;
     void OnEnter() override{
-        if(!uILayer){
-            uILayer = new UILayer();
-            std::vector<GLOBAL::UI::TextButtonData> textButtonData;
-            textButtonData.push_back(GLOBAL::UI::TextButtonData(GLOBAL::SCREEN::SCREEN_WIDTH / 2, GLOBAL::SCREEN::SCREEN_HEIGHT * 0.77f, GLOBAL::UI::ButtonSize::Medium , "Start", GLOBAL::SCREEN::FONT_SIZE::MEDIUM));
-            textButtonData.push_back(GLOBAL::UI::TextButtonData(GLOBAL::SCREEN::SCREEN_WIDTH / 2, GLOBAL::SCREEN::SCREEN_HEIGHT * 0.77f + 100, GLOBAL::UI::ButtonSize::Small,"> HighScores", GLOBAL::SCREEN::FONT_SIZE::SMALL));
-            uILayer->CreateTextButtons(textButtonData);
-            uILayer->GetTextButtons()[0]->SetAction(SceneManager::GoToGame);
-            uILayer->GetTextButtons()[1]->SetAction(SceneManager::GoToHighScore);
-        }else{
-            uILayer->GetTextButtons()[0]->SetActive(true);
-            uILayer->GetTextButtons()[1]->SetActive(true);
+        if(!isInitialized) {
+            Init();
+        }else {
+            UILayer::Instance().GetTextButtons()[0]->SetActive(true);
+            UILayer::Instance().GetTextButtons()[1]->SetActive(true);
+            UILayer::Instance().GetTextButtons()[2]->SetActive(true);
+            UILayer::Instance().GetTextButtons()[3]->SetActive(true);
         }
-        if(!gridLayer){
-            gridLayer = new GridLayer();
-            gridLayer->LoadNewGrid(15,20,48);
-        }
+        GridLayer::Instance().LoadNewGrid(15,20,48);
+    }
+    void Init() override {
+        std::vector<GLOBAL::UI::TextButtonData> textButtonData;
+        textButtonData.emplace_back(GLOBAL::SCREEN::SCREEN_WIDTH / 2, GLOBAL::SCREEN::SCREEN_HEIGHT * 0.77f, GLOBAL::UI::ButtonSize::Medium , "Start", GLOBAL::SCREEN::FONT_SIZE::MEDIUM);
+        textButtonData.emplace_back(GLOBAL::SCREEN::SCREEN_WIDTH / 2, GLOBAL::SCREEN::SCREEN_HEIGHT * 0.77f + 100, GLOBAL::UI::ButtonSize::Small,"> HighScores", GLOBAL::SCREEN::FONT_SIZE::SMALL);
+        textButtonData.emplace_back(GLOBAL::SCREEN::SCREEN_WIDTH - 25, 25, GLOBAL::UI::ButtonSize::Tiny , "X", GLOBAL::SCREEN::FONT_SIZE::SMALL);
+        textButtonData.emplace_back(25, 25, GLOBAL::UI::ButtonSize::Tiny,"<", GLOBAL::SCREEN::FONT_SIZE::SMALL);
+        UILayer::Instance().CreateTextButtons(textButtonData);
+        std::vector<GLOBAL::UI::TextData> textData;
+        textData.emplace_back(GLOBAL::SCREEN::SCREEN_WIDTH / 2, GLOBAL::SCREEN::SCREEN_HEIGHT * 0.33, "Snake", GLOBAL::SCREEN::FONT_SIZE::LARGE);
+        UILayer::Instance().CreateText(textData);
+        UILayer::Instance().GetTextButtons()[0]->SetAction(SceneManager::GoToGame);
+        UILayer::Instance().GetTextButtons()[1]->SetAction(SceneManager::GoToHighScore);
+        UILayer::Instance().GetTextButtons()[2]->SetAction(Game::End);
+        UILayer::Instance().GetTextButtons()[3]->SetAction(SceneManager::GoToMenu);
 
+        isInitialized = true;
     }
     void Update() override{
-        gridLayer->Update();
-        uILayer->Update();
+        GridLayer::Instance().Update();
+        UILayer::Instance().Update();
 
     }
     void Draw() override{
-        gridLayer->Draw();
-        uILayer->Draw();
+        GridLayer::Instance().Draw();
+        UILayer::Instance().Draw();
 
     }
     void OnExit() override{
-        uILayer->GetTextButtons()[0]->SetActive(false);
-        uILayer->GetTextButtons()[1]->SetActive(false);
+        UILayer::Instance().GetTextButtons()[0]->SetActive(false);
+        UILayer::Instance().GetTextButtons()[1]->SetActive(false);
+        UILayer::Instance().GetText()[0]->SetActive(false);
     }
 };
 
 struct GameScene : public Scene {
     GameScene() = default;
+    Snake* snake{};
     void OnEnter() override{
-        if(!uILayer){
-            uILayer = new UILayer();
-            if(uILayer->GetTextButtons().size() < 4){
-                std::vector<GLOBAL::UI::TextButtonData> textButtonData;
-                textButtonData.push_back(GLOBAL::UI::TextButtonData(GLOBAL::SCREEN::SCREEN_WIDTH - 25, 25, GLOBAL::UI::ButtonSize::Tiny , "X", GLOBAL::SCREEN::FONT_SIZE::SMALL));
-                textButtonData.push_back(GLOBAL::UI::TextButtonData(25, 25, GLOBAL::UI::ButtonSize::Tiny,"<", GLOBAL::SCREEN::FONT_SIZE::SMALL));
-                uILayer->CreateTextButtons(textButtonData);
-                uILayer->GetTextButtons()[2]->SetAction(Game::End);
-                uILayer->GetTextButtons()[3]->SetAction(SceneManager::GoToMenu);
-            }
-            else{
-                uILayer->GetTextButtons()[2]->SetActive(true);
-                uILayer->GetTextButtons()[3]->SetActive(true);
-            }
+
+        if(!isInitialized && !UILayer::Instance().GetTextButtons()[2] && !UILayer::Instance().GetTextButtons()[3]) {
+            Init();
+        }else {
+            UILayer::Instance().GetTextButtons()[2]->SetActive(true);
+            UILayer::Instance().GetTextButtons()[3]->SetActive(true);
+            snake = new Snake();
+            isInitialized = true;
         }
-        else{
-            uILayer->GetTextButtons()[2]->SetActive(true);
-            uILayer->GetTextButtons()[3]->SetActive(true);
-        }
-        if(!gridLayer){
-            gridLayer = new GridLayer();
-            gridLayer->LoadNewGrid(30,40,24);
-        }
-        snake = new Snake(gridLayer->mainGrid);
+        GridLayer::Instance().LoadNewGrid(30,40,24);
     }
-    Snake* snake;
+    void Init() override{
+        std::vector<GLOBAL::UI::TextButtonData> textButtonData;
+        textButtonData.emplace_back(GLOBAL::SCREEN::SCREEN_WIDTH - 25, 25, GLOBAL::UI::ButtonSize::Tiny , "X", GLOBAL::SCREEN::FONT_SIZE::SMALL);
+        textButtonData.emplace_back(25, 25, GLOBAL::UI::ButtonSize::Tiny,"<", GLOBAL::SCREEN::FONT_SIZE::SMALL);
+        UILayer::Instance().CreateTextButtons(textButtonData);
+        UILayer::Instance().GetTextButtons()[2]->SetAction(Game::End);
+        UILayer::Instance().GetTextButtons()[3]->SetAction(SceneManager::GoToMenu);
+        snake = new Snake();
+        isInitialized = true;
+    }
     void Update() override{
-        gridLayer->Update();
-        uILayer->Update();
+        GridLayer::Instance().Update();
+        UILayer::Instance().Update();
         snake->Update();
 
     }
     void Draw() override{
-        gridLayer->Draw();
-        uILayer->Draw();
+        GridLayer::Instance().Draw();
+        UILayer::Instance().Draw();
         snake->Draw();
 
     }
     void OnExit() override{
-        uILayer->GetTextButtons()[2]->SetActive(false);
-        uILayer->GetTextButtons()[3]->SetActive(false);
+        UILayer::Instance().GetTextButtons()[2]->SetActive(false);
+        UILayer::Instance().GetTextButtons()[3]->SetActive(false);
     }
 };
 
-struct HighScoreScene : public Scene {
+struct HighScoreScene : public Scene{
     HighScoreScene() = default;
     void OnEnter() override{
-        if(!uILayer){
-            uILayer = new UILayer();
-            if(uILayer->GetTextButtons().size() < 4){
-                std::vector<GLOBAL::UI::TextButtonData> textButtonData;
-                textButtonData.push_back(GLOBAL::UI::TextButtonData(GLOBAL::SCREEN::SCREEN_WIDTH - 25, 25, GLOBAL::UI::ButtonSize::Tiny , "X", GLOBAL::SCREEN::FONT_SIZE::SMALL));
-                textButtonData.push_back(GLOBAL::UI::TextButtonData(25, 25, GLOBAL::UI::ButtonSize::Tiny,"<", GLOBAL::SCREEN::FONT_SIZE::SMALL));
-                uILayer->CreateTextButtons(textButtonData);
-                uILayer->GetTextButtons()[2]->SetAction(Game::End);
-                uILayer->GetTextButtons()[3]->SetAction(SceneManager::GoToMenu);
-            }
-            else{
-                uILayer->GetTextButtons()[2]->SetActive(true);
-                uILayer->GetTextButtons()[3]->SetActive(true);
-            }
+
+        if(!isInitialized && !UILayer::Instance().GetTextButtons()[2] && !UILayer::Instance().GetTextButtons()[3]){
+            Init();
         }
         else{
-            uILayer->GetTextButtons()[2]->SetActive(true);
-            uILayer->GetTextButtons()[3]->SetActive(true);
+            UILayer::Instance().GetTextButtons()[2]->SetActive(true);
+            UILayer::Instance().GetTextButtons()[3]->SetActive(true);
+            isInitialized = true;
         }
-        if(!gridLayer){
-            gridLayer = new GridLayer();
-            gridLayer->LoadNewGrid(15,10,48);
-        }
+        GridLayer::Instance().LoadNewGrid(15,10,48);
+    }
+    void Init() override{
+        std::vector<GLOBAL::UI::TextButtonData> textButtonData;
+        textButtonData.emplace_back(GLOBAL::SCREEN::SCREEN_WIDTH - 25, 25, GLOBAL::UI::ButtonSize::Tiny , "X", GLOBAL::SCREEN::FONT_SIZE::SMALL);
+        textButtonData.emplace_back(25, 25, GLOBAL::UI::ButtonSize::Tiny,"<", GLOBAL::SCREEN::FONT_SIZE::SMALL);
+        UILayer::Instance().CreateTextButtons(textButtonData);
+        UILayer::Instance().GetTextButtons()[2]->SetAction(Game::End);
+        UILayer::Instance().GetTextButtons()[3]->SetAction(SceneManager::GoToMenu);
+        isInitialized = true;
     }
     void Update() override{
-        gridLayer->Update();
-        uILayer->Update();
+        GridLayer::Instance().Update();
+        UILayer::Instance().Update();
 
     }
     void Draw() override{
-        gridLayer->Draw();
-        uILayer->Draw();
+        GridLayer::Instance().Draw();
+        UILayer::Instance().Draw();
 
     }
     void OnExit() override{
-        uILayer->GetTextButtons()[2]->SetActive(false);
-        uILayer->GetTextButtons()[3]->SetActive(false);
+        UILayer::Instance().GetTextButtons()[2]->SetActive(false);
+        UILayer::Instance().GetTextButtons()[3]->SetActive(false);
     }
 };

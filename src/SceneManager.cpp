@@ -1,9 +1,9 @@
 #include "SceneManager.h"
 #include "Scenes.h"
 
-MenuScene* SceneManager::menuScene;
-GameScene* SceneManager::gameScene;
-HighScoreScene* SceneManager::highScoreScene;
+MenuScene SceneManager::menuScene;
+GameScene SceneManager::gameScene;
+HighScoreScene SceneManager::highScoreScene;
 
 Scene* SceneManager::currentScene;
 
@@ -14,28 +14,30 @@ SceneManager& SceneManager::Instance() {
     return sceneManager;
 }
 void SceneManager::Init() {
-    menuScene = new MenuScene();
-    gameScene = new GameScene();
-    highScoreScene = new HighScoreScene();
-    currentScene = menuScene;
+    auto Grid = new GridLayer();
+    auto UI = new UILayer();
+    menuScene = MenuScene();
+    gameScene = GameScene();
+    highScoreScene = HighScoreScene();
+    currentScene = &menuScene;
     currentScene->OnEnter();
 
 }
 void SceneManager::GoToHighScore() {
     currentScene->OnExit();
-    currentScene = highScoreScene;
+    currentScene = &highScoreScene;
     currentScene->OnEnter();
 }
 
 void SceneManager::GoToMenu() {
     currentScene->OnExit();
-    currentScene = menuScene;
+    currentScene = &menuScene;
     currentScene->OnEnter();
 }
 
 void SceneManager::GoToGame() {
     currentScene->OnExit();
-    currentScene = gameScene;
+    currentScene = &gameScene;
     currentScene->OnEnter();
 }
 
