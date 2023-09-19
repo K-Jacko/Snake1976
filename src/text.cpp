@@ -2,7 +2,10 @@
 #include "WindowLayer.h"
 #include "InputLayer.h"
 #include "UILayer.h"
-
+extern "C"{
+    extern const unsigned char Pixeboy_z8XGD_ttf[];
+    extern const unsigned int Pixeboy_z8XGD_ttf_len;
+}
 Text::Text(GLOBAL::SCREEN::FONT_SIZE m_fontSize, const char* m_text, SDL_Rect m_Box) {
     renderer = WindowLayer::Instance().GetRenderer();
     string = m_text;
@@ -13,12 +16,19 @@ Text::Text(GLOBAL::SCREEN::FONT_SIZE m_fontSize, const char* m_text, SDL_Rect m_
     }
     boxRect = m_Box;
     isInteractable = true;
+    textColor = {255,255,255,255};
+    textSurface = TTF_RenderText_Solid(font, string, textColor);
+    textTexture = SDL_CreateTextureFromSurface(renderer, textSurface);
     interactionStatus = GLOBAL::GAME::InteractionStatus::NORMAL;
 }
 Text::Text(GLOBAL::UI::TextData textData) {
     renderer = WindowLayer::Instance().GetRenderer();
     string = textData.Text;
     fontSize = textData.FontSize;
+    font = TTF_OpenFont("resources/Pixeboy-z8XGD.ttf", fontSize);
+    if (font == nullptr) {
+        SDL_Log("Failed to load font: %s", TTF_GetError());
+    }
     textColor = {255,255,255,255};
     interactionStatus = GLOBAL::GAME::InteractionStatus::NORMAL;
     switch (fontSize) {
@@ -41,10 +51,8 @@ Text::Text(GLOBAL::UI::TextData textData) {
     }
     boxRect.x = textData.XPosition - (boxRect.w/2);
     boxRect.y = textData.YPosition - (boxRect.h/2);
-    font = TTF_OpenFont("resources/Pixeboy-z8XGD.ttf", fontSize);
-    if (font == nullptr) {
-        SDL_Log("Failed to load font: %s", TTF_GetError());
-    }
+    textSurface = TTF_RenderText_Solid(font, string, textColor);
+    textTexture = SDL_CreateTextureFromSurface(renderer, textSurface);
 
 }
 void Text::SetActive(bool active){
@@ -52,6 +60,12 @@ void Text::SetActive(bool active){
 }
 void Text::Update() {
     if(isInteractable && isActive){
+//        if (textSurface == nullptr) {
+//            SDL_Log("Failed to render string surface: %s", TTF_GetError());
+//        }
+//        if (textTexture == nullptr) {
+//            SDL_Log("Failed to create string texture: %s", SDL_GetError());
+//        }
         InputLayer& inputLayer = InputLayer::Instance();
         SDL_Point point;
         point.x = InputLayer::Instance().GetMousePosition().x;
@@ -81,15 +95,6 @@ void Text::Update() {
 }
 void Text::Draw() {
     if(isActive){
-        textSurface = TTF_RenderText_Solid(font, string, textColor);
-        textTexture = SDL_CreateTextureFromSurface(renderer, textSurface);
-
-        if (textSurface == nullptr) {
-            SDL_Log("Failed to render string surface: %s", TTF_GetError());
-        }
-        if (textTexture == nullptr) {
-            SDL_Log("Failed to create string texture: %s", SDL_GetError());
-        }
 
         int textWidth, textHeight;
         SDL_QueryTexture(textTexture, nullptr, nullptr, &textWidth, &textHeight);
@@ -100,9 +105,15 @@ void Text::Draw() {
 
         textRect = { centerX, centerY, textWidth , textHeight };
         SDL_RenderCopy(renderer, textTexture, nullptr, &textRect);
-        SDL_FreeSurface(textSurface);
-        SDL_DestroyTexture(textTexture);
     }
+}
+
+void Text::ChangeText(const char* text) {
+    string = text;
+    SDL_FreeSurface(textSurface);
+    SDL_DestroyTexture(textTexture);
+    textSurface = TTF_RenderText_Solid(font, string, textColor);
+    textTexture = SDL_CreateTextureFromSurface(renderer, textSurface);
 }
 
 

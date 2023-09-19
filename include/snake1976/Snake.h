@@ -1,5 +1,7 @@
 #pragma once
 #include <random>
+#include "UILayer.h"
+#include "SDL.h"
 #include "GridLayer.h"
 #include "InputLayer.h"
 #include "Timer.h"
@@ -10,7 +12,7 @@ class Snake
 {
 public:
     Snake(){
-        auto head = new SnakeCell;
+        head = new SnakeCell;
         head->cellType = SnakeCellType::HEAD;
         head->position = GLOBAL::MATH::Vector2D(GridLayer::Instance().mainGrid->GetWidth()/2 * GridLayer::Instance().mainGrid->GetCellSize(),GridLayer::Instance().mainGrid->GetHeight()/2 * GridLayer::Instance().mainGrid->GetCellSize());
         cells.push_back(head);
@@ -42,15 +44,36 @@ public:
         if(!InputLayer::Instance().GetKeyInputs().empty()){
             isStarted = true;
         }
-        if(timer.Elapsed() >= 0.2 && isStarted){
+        if(timer.Elapsed() >= gameSpeed && isStarted){
             for (int i = snakeLength - 1; i > 0; i--) {
                 cells[i]->position = cells[i - 1]->position;
             }
-            cells[0]->position.Add(GetInput());
+            head->position.Add(GetInput());
             CheckPositions();
             timer.Reset();
         }
     };
+    void Reset(){
+        score = 0;
+        gameSpeed = 0.2f;
+        snakeLength = 7;
+        foodCell->position = GenerateRandomPosition();
+        cells.clear();
+        cells.shrink_to_fit();
+        head->position = {GridLayer::Instance().mainGrid->GetWidth() * GridLayer::Instance().mainGrid->GetCellSize() / 2, GridLayer::Instance().mainGrid->GetHeight() * GridLayer::Instance().mainGrid->GetCellSize() / 2};
+        MovementDirection = {0,0};
+        isStarted = false;
+        cells.push_back(head);
+        for (int i = 1; i < snakeLength; ++i) {
+            auto tail = new SnakeCell(head->position.x, head->position.y);
+            tail->cellType = SnakeCellType::TAIL;
+            tail->position = GLOBAL::MATH::Vector2D(head->position.x, head->position.y);
+            cells.push_back(tail);
+        }
+        std::string floatString = std::to_string(score);
+        UILayer::Instance().GetText()[1]->ChangeText(floatString.c_str());
+        std::cout << cells.size() << std::endl;
+    }
 private:
     GLOBAL::MATH::Vector2D GetInput(){
         if(!InputLayer::Instance().GetKeyInputs().empty()){
@@ -64,26 +87,53 @@ private:
     GLOBAL::MATH::Vector2D GenerateRandomPosition(){
       std::random_device rd;
       std::mt19937 gen(rd());
-      std::uniform_int_distribution<> distrX(0, GridLayer::Instance().mainGrid->GetWidth());
-      std::uniform_int_distribution<> distrY(0, GridLayer::Instance().mainGrid->GetHeight());
+      std::uniform_int_distribution<> distrX(1, GridLayer::Instance().mainGrid->GetWidth());
+      std::uniform_int_distribution<> distrY(1, GridLayer::Instance().mainGrid->GetHeight());
       int randX = distrX(gen) * GridLayer::Instance().mainGrid->GetCellSize();
       int randY = distrY(gen) * GridLayer::Instance().mainGrid->GetCellSize();
-        return {randX,randY};
+      return {randX,randY};
     };
     void CheckPositions(){
-        std::cout << foodCell->position << "food" << std::endl;
-        std::cout << cells[0]->position << "head" << std::endl;
         if(foodCell->position == cells[0]->position){
             foodCell->position = GenerateRandomPosition();
+            auto tail = new SnakeCell(cells[snakeLength -1]->position.x, cells[snakeLength -1]->position.y);
+            tail->cellType = SnakeCellType::TAIL;
+            cells.push_back(tail);
+            snakeLength += 1;
+            IncreaseScore();
+        }
+        for(SnakeCell* cell : cells){
+            if(cell->position.x > GridLayer::Instance().mainGrid->GetWidth() * GridLayer::Instance().mainGrid->GetCellSize()){
+                cell->position.x = 0;
+            } else if(cell->position.x < GridLayer::Instance().mainGrid->GetCellSize()){
+                cell->position.x = GridLayer::Instance().mainGrid->GetWidth() * GridLayer::Instance().mainGrid->GetCellSize();
+            }
+            if(cell->position.y > (GridLayer::Instance().mainGrid->GetHeight() + 1 ) * GridLayer::Instance().mainGrid->GetCellSize()){
+                cell->position.y = 0;
+            } else if(cell->position.y < GridLayer::Instance().mainGrid->GetCellSize()){
+                cell->position.y = (GridLayer::Instance().mainGrid->GetHeight() + 1 ) * GridLayer::Instance().mainGrid->GetCellSize();
+            }
         }
     };
+    void IncreaseScore(){
+        score += 1;
+        if(gameSpeed > 0.15f)
+        {
+            gameSpeed -= 0.005f;
+        }else{
+            gameSpeed = 0.15f;
+        }
+        std::string floatString = std::to_string(score);
+        UILayer::Instance().GetText()[1]->ChangeText(floatString.c_str());
+    }
     GLOBAL::MATH::Vector2D MovementDirection{0,-1};
     FoodCell* foodCell;
+    SnakeCell* head;
     bool isStarted = false;
     Timer timer;
     int snakeLength = 7;
+    int score = 0;
+    float gameSpeed = 0.2f;
     std::vector<SnakeCell*> cells;
-
-
 };
 

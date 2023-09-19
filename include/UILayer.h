@@ -1,25 +1,20 @@
 #pragma once
 #include "Global.h"
-#include "Buttons.h"
-#include "snake1976/Snake.h"
 
 class UILayer
 {
 public:
-    static UILayer& Instance();
+    UILayer();
     ~UILayer();
+    static UILayer& Instance();
     void Init();
-    static void Update();
-    static void Draw();
-    static void Reset();
-    static void CreateTextButtons(const std::vector<GLOBAL::UI::TextButtonData>& textButtonData);
-    static void CreateText(const std::vector<GLOBAL::UI::TextData>& textData);
-    static std::vector<TextButton*> GetTextButtons();
-    static std::vector<Text*> GetText();
-    void AddTextToVector(Text m_text);
-    static void LoadFirstScene();
-    static void LoadSecondScene();
-    static void LoadHighScoreScene();
+    void Update();
+    void Draw();
+    void Reset();
+    void CreateTextButtons(const std::vector<GLOBAL::UI::TextButtonData>& textButtonData);
+    void CreateText(const std::vector<GLOBAL::UI::TextData>& textData);
+    std::vector<struct TextButton*> GetTextButtons();
+    std::vector<struct Text*> GetText();
 private:
     static std::vector<TextButton*> textButtons;
     static std::vector<Text*> texts;

@@ -7,6 +7,7 @@ public:
     Text(GLOBAL::SCREEN::FONT_SIZE m_fontSize, const char* m_text, SDL_Rect m_Box);
     Text(GLOBAL::UI::TextData textData);
     void SetActive(bool active);
+    void ChangeText(const char* text);
     void Update();
     void Draw();
     void Reset();

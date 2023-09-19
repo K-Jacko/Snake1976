@@ -1,12 +1,16 @@
 #include "UILayer.h"
 #include "Game.h"
 #include "Text.h"
+#include "Buttons.h"
 
 
 
 std::vector<TextButton*> UILayer::textButtons;
 std::vector<Text*> UILayer::texts;
 
+UILayer::UILayer() {
+
+}
 
 UILayer& UILayer::Instance() {
     static UILayer uiLayer;
@@ -31,9 +35,6 @@ void UILayer::Draw() {
     for (auto & text : texts) {
         text->Draw();
     }
-//    if(snake != nullptr){
-//        snake->Draw();
-//    }
 }
 void UILayer::Reset() {
 
@@ -51,20 +52,6 @@ void UILayer::CreateText(const std::vector<GLOBAL::UI::TextData>& textData) {
         texts.push_back(text);
     }
 }
-void UILayer::AddTextToVector(Text m_text) {
-
-}
-void UILayer::LoadFirstScene() {
-
-}
-void UILayer::LoadSecondScene() {
-
-}
-
-void UILayer::LoadHighScoreScene(){
-
-}
-
 std::vector<TextButton*> UILayer::GetTextButtons() {
     return textButtons;
 }
@@ -72,5 +59,7 @@ std::vector<TextButton*> UILayer::GetTextButtons() {
 std::vector<Text *> UILayer::GetText() {
     return texts;
 }
+
+
 
 

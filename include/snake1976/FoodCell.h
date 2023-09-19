@@ -3,6 +3,8 @@
 
 class FoodCell{
 public:
+    FoodCell(GLOBAL::MATH::Vector2D m_position)
+    :position(m_position){}
     GLOBAL::MATH::Vector2D position;
     void Update(){
 
