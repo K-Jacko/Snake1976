@@ -5,11 +5,6 @@
 #include "GridLayer.h"
 
 
-struct MenuScene;
-struct GameScene;
-struct HighScoreScene;
-struct Scene;
-
 class SceneManager
 {
 public:
@@ -21,8 +16,10 @@ public:
     static void GoToHighScore();
     static void GoToMenu();
     static void GoToGame();
-    static Scene* currentScene;
-    static MenuScene menuScene;
-    static GameScene gameScene;
-    static HighScoreScene highScoreScene;
+    static void GoToGameOver();
+    static struct Scene* currentScene;
+    static struct MenuScene menuScene;
+    static struct GameScene gameScene;
+    static struct HighScoreScene highScoreScene;
+    static struct GameOverScene gameOverScene;
 };

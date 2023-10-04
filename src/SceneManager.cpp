@@ -4,6 +4,7 @@
 MenuScene SceneManager::menuScene;
 GameScene SceneManager::gameScene;
 HighScoreScene SceneManager::highScoreScene;
+GameOverScene SceneManager::gameOverScene;
 
 Scene* SceneManager::currentScene;
 
@@ -19,6 +20,8 @@ void SceneManager::Init() {
     menuScene = MenuScene();
     gameScene = GameScene();
     highScoreScene = HighScoreScene();
+    gameOverScene = GameOverScene();
+
     currentScene = &menuScene;
     currentScene->OnEnter();
 
@@ -38,6 +41,12 @@ void SceneManager::GoToMenu() {
 void SceneManager::GoToGame() {
     currentScene->OnExit();
     currentScene = &gameScene;
+    currentScene->OnEnter();
+}
+
+void SceneManager::GoToGameOver() {
+    currentScene->OnExit();
+    currentScene = &gameOverScene;
     currentScene->OnEnter();
 }
 

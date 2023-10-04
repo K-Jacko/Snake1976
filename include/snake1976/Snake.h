@@ -36,9 +36,6 @@ public:
         for (int i = 1; i < cells.size(); ++i) {
             GridLayer::Instance().mainGrid->FillCell(GridLayer::Instance().mainGrid->FindCell(cells[i]->position),SDL_Color(200,200,200));
         }
-        if(InputLayer::Instance().LeftIsPressed()){
-            GridLayer::Instance().mainGrid->FillCell(GridLayer::Instance().mainGrid->FindCell(GLOBAL::MATH::Vector2D(InputLayer::Instance().GetMousePosition().x,InputLayer::Instance().GetMousePosition().y)),SDL_Color(255,255,255));
-        }
     };
     void Update(){
         if(!InputLayer::Instance().GetKeyInputs().empty()){
@@ -60,7 +57,7 @@ public:
         foodCell->position = GenerateRandomPosition();
         cells.clear();
         cells.shrink_to_fit();
-        head->position = {GridLayer::Instance().mainGrid->GetWidth() * GridLayer::Instance().mainGrid->GetCellSize() / 2, GridLayer::Instance().mainGrid->GetHeight() * GridLayer::Instance().mainGrid->GetCellSize() / 2};
+        head->position = {GLOBAL::MATH::Vector2D(GridLayer::Instance().mainGrid->GetWidth()/2 * GridLayer::Instance().mainGrid->GetCellSize(),GridLayer::Instance().mainGrid->GetHeight()/2 * GridLayer::Instance().mainGrid->GetCellSize())};
         MovementDirection = {0,0};
         isStarted = false;
         cells.push_back(head);
@@ -72,7 +69,7 @@ public:
         }
         std::string floatString = std::to_string(score);
         UILayer::Instance().GetText()[1]->ChangeText(floatString.c_str());
-        std::cout << cells.size() << std::endl;
+
     }
 private:
     GLOBAL::MATH::Vector2D GetInput(){
@@ -94,13 +91,11 @@ private:
       return {randX,randY};
     };
     void CheckPositions(){
-        if(foodCell->position == cells[0]->position){
-            foodCell->position = GenerateRandomPosition();
-            auto tail = new SnakeCell(cells[snakeLength -1]->position.x, cells[snakeLength -1]->position.y);
-            tail->cellType = SnakeCellType::TAIL;
-            cells.push_back(tail);
-            snakeLength += 1;
-            IncreaseScore();
+        for(int i = 1; i < cells.size(); i++){
+            if(head->position == cells[i]->position)
+            {
+                SceneManager::GoToGameOver();
+            }
         }
         for(SnakeCell* cell : cells){
             if(cell->position.x > GridLayer::Instance().mainGrid->GetWidth() * GridLayer::Instance().mainGrid->GetCellSize()){
@@ -108,11 +103,19 @@ private:
             } else if(cell->position.x < GridLayer::Instance().mainGrid->GetCellSize()){
                 cell->position.x = GridLayer::Instance().mainGrid->GetWidth() * GridLayer::Instance().mainGrid->GetCellSize();
             }
-            if(cell->position.y > (GridLayer::Instance().mainGrid->GetHeight() + 1 ) * GridLayer::Instance().mainGrid->GetCellSize()){
+            if(cell->position.y > GridLayer::Instance().mainGrid->GetHeight() * GridLayer::Instance().mainGrid->GetCellSize()){
                 cell->position.y = 0;
             } else if(cell->position.y < GridLayer::Instance().mainGrid->GetCellSize()){
-                cell->position.y = (GridLayer::Instance().mainGrid->GetHeight() + 1 ) * GridLayer::Instance().mainGrid->GetCellSize();
+                cell->position.y = GridLayer::Instance().mainGrid->GetHeight() * GridLayer::Instance().mainGrid->GetCellSize();
             }
+        }
+        if(foodCell->position == cells[0]->position){
+            foodCell->position = GenerateRandomPosition();
+            auto tail = new SnakeCell(cells[snakeLength -1]->position.x, cells[snakeLength -1]->position.y);
+            tail->cellType = SnakeCellType::TAIL;
+            cells.push_back(tail);
+            snakeLength += 1;
+            IncreaseScore();
         }
     };
     void IncreaseScore(){

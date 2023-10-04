@@ -9,6 +9,7 @@ public:
     void SetActive(bool active);
     void ChangeText(const char* text);
     void Update();
+    void UpdateInteraction(GLOBAL::GAME::InteractionStatus interactionStatus);
     void Draw();
     void Reset();
     GLOBAL::GAME::InteractionStatus interactionStatus;

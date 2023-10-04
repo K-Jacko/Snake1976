@@ -96,7 +96,6 @@ TextButton::TextButton(GLOBAL::UI::TextButtonData m_data) {
 }
 void TextButton::Update() {
     if(isActive){
-        text->Update();
         SDL_Point point;
         point.x = InputLayer::Instance().GetMousePosition().x;
         point.y = InputLayer::Instance().GetMousePosition().y;
@@ -115,11 +114,26 @@ void TextButton::Update() {
             buttonState = GLOBAL::GAME::InteractionStatus::NORMAL;
             isPressed = false;
         }
+        text->UpdateInteraction(buttonState);
     }
 }
 void TextButton::Draw() {
     if(isActive){
-        SDL_RenderFillRect(renderer,&shape);
+        switch (buttonState) {
+            case GLOBAL::GAME::InteractionStatus::HOVER :
+                SDL_SetRenderDrawColor(renderer,0,255,0,255);
+                break;
+            case GLOBAL::GAME::InteractionStatus::PRESSED :
+                SDL_SetRenderDrawColor(renderer,255,255,255,255);
+                break;
+            case GLOBAL::GAME::InteractionStatus::NORMAL :
+                SDL_SetRenderDrawColor(renderer,255,0,0,255);
+                break;
+        }
+#ifdef NDEBUG
+        SDL_RenderDrawRect(renderer,&shape);
+#endif
+        //SDL_SetRenderDrawColor(renderer,0,0,0,255);
         text->Draw();
         SDL_SetRenderDrawColor(renderer,0,0,0,255);
     }

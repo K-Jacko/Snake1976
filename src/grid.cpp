@@ -27,36 +27,29 @@ void Grid::Update() {
 
 }
 void Grid::Draw() {
-    if(cells.size() > 1){
-        for(Cell* cell:cells){
-            SDL_SetRenderDrawColor(renderer, 155, 155, 155, 225);
-            SDL_Rect rc;
-            rc.x = cell->position.x;
-            rc.y = cell->position.y;
-            rc.w = cellSize ;
-            rc.h = cellSize;
-            SDL_RenderDrawRect(renderer, &rc);
-            SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-        }
+    for(Cell* cell:cells){
+        SDL_SetRenderDrawColor(renderer, 155, 155, 155, 225);
+        SDL_Rect rc;
+        rc.x = cell->position.x;
+        rc.y = cell->position.y;
+        rc.w = cellSize ;
+        rc.h = cellSize;
+        SDL_RenderDrawRect(renderer, &rc);
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     }
 
-    // Top
     SDL_Rect topBorder = {0, 0, GLOBAL::SCREEN::SCREEN_WIDTH, GLOBAL::SCREEN::BORDER_SIZE };
     SDL_RenderFillRect(renderer, &topBorder);
 
-    // Bottom
     SDL_Rect bottomBorder = {0, GLOBAL::SCREEN::SCREEN_HEIGHT - GLOBAL::SCREEN::BORDER_SIZE, GLOBAL::SCREEN::SCREEN_WIDTH, GLOBAL::SCREEN::BORDER_SIZE};
     SDL_RenderFillRect(renderer, &bottomBorder);
 
-    // Left
     SDL_Rect leftBorder = {0, GLOBAL::SCREEN::BORDER_SIZE, GLOBAL::SCREEN::BORDER_SIZE, GLOBAL::SCREEN::SCREEN_HEIGHT - 2 * GLOBAL::SCREEN::BORDER_SIZE };
     SDL_RenderFillRect(renderer, &leftBorder);
 
-    // Right
     SDL_Rect rightBorder = {GLOBAL::SCREEN::SCREEN_WIDTH - GLOBAL::SCREEN::BORDER_SIZE, GLOBAL::SCREEN::BORDER_SIZE, GLOBAL::SCREEN::BORDER_SIZE, GLOBAL::SCREEN::SCREEN_HEIGHT - 2 * GLOBAL::SCREEN::BORDER_SIZE };
     SDL_RenderFillRect(renderer, &rightBorder);
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-
 }
 void Grid::FillCell(Cell *cell, SDL_Color color) {
     SDL_SetRenderDrawColor(renderer,color.r,color.g,color.b,color.a);
