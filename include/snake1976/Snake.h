@@ -1,13 +1,17 @@
 #pragma once
 #include <random>
-#include "UILayer.h"
+#include "./layers/UILayer.h"
 #include "SDL.h"
-#include "GridLayer.h"
-#include "InputLayer.h"
+#include "./layers/GridLayer.h"
+#include "./layers/InputLayer.h"
 #include "Timer.h"
 #include "SnakeCell.h"
 #include "FoodCell.h"
-
+struct SnakeEvent{
+    SnakeEvent() = default;
+    Mix_Chunk* soundCLip{};
+    SDL_Event event{};
+};
 class Snake
 {
 public:
@@ -25,11 +29,27 @@ public:
         }
         std::srand(static_cast<unsigned int>(std::time(nullptr)));
         foodCell = new FoodCell(GenerateRandomPosition());
+        SetUpEvents();
     };
     ~Snake(){
         cells.clear();
         cells.shrink_to_fit();
     };
+    void SetUpEvents(){
+        quitEvent.event.type = SDL_USEREVENT;
+        quitEvent.event.user.code = 3;
+
+        eatEvent.event.type = SDL_USEREVENT;
+        eatEvent.event.user.code = 200;
+        eatEvent.soundCLip = Mix_LoadWAV("assets/audio/eat.wav");
+        eatEvent.event.user.data1 = eatEvent.soundCLip;
+
+        deathEvent.event.type = SDL_USEREVENT;
+        deathEvent.event.user.code = 200;
+        deathEvent.soundCLip = Mix_LoadWAV("assets/audio/death.wav");
+        deathEvent.event.user.data1 = deathEvent.soundCLip;
+
+    }
     void Draw(){
         GridLayer::Instance().mainGrid->FillCell(GridLayer::Instance().mainGrid->FindCell(cells[0]->position),SDL_Color(255,255,255));
         GridLayer::Instance().mainGrid->FillCell(GridLayer::Instance().mainGrid->FindCell(foodCell->position), SDL_Color(255,255,255));
@@ -42,10 +62,8 @@ public:
             isStarted = true;
         }
         if(timer.Elapsed() >= gameSpeed && isStarted){
-            for (int i = snakeLength - 1; i > 0; i--) {
-                cells[i]->position = cells[i - 1]->position;
-            }
-            head->position.Add(GetInput());
+            MoveTail();
+            MoveHead();
             CheckPositions();
             timer.Reset();
         }
@@ -81,6 +99,14 @@ private:
             return {MovementDirection};
         }
     };
+    void MoveTail(){
+        for (int i = snakeLength - 1; i > 0; i--) {
+            cells[i]->position = cells[i - 1]->position;
+        }
+    }
+    void MoveHead(){
+        head->position.Add(GetInput());
+    }
     GLOBAL::MATH::Vector2D GenerateRandomPosition(){
       std::random_device rd;
       std::mt19937 gen(rd());
@@ -94,7 +120,8 @@ private:
         for(int i = 1; i < cells.size(); i++){
             if(head->position == cells[i]->position)
             {
-                SceneManager::GoToGameOver();
+                SDL_PushEvent(&deathEvent.event);
+                SDL_PushEvent(&quitEvent.event);
             }
         }
         for(SnakeCell* cell : cells){
@@ -116,19 +143,26 @@ private:
             cells.push_back(tail);
             snakeLength += 1;
             IncreaseScore();
+            IncreaseGameSpeed();
+            SDL_PushEvent(&eatEvent.event);
         }
     };
     void IncreaseScore(){
         score += 1;
+        std::string floatString = std::to_string(score);
+        UILayer::Instance().GetText()[1]->ChangeText(floatString.c_str());
+    }
+    void IncreaseGameSpeed(){
         if(gameSpeed > 0.15f)
         {
             gameSpeed -= 0.005f;
         }else{
             gameSpeed = 0.15f;
         }
-        std::string floatString = std::to_string(score);
-        UILayer::Instance().GetText()[1]->ChangeText(floatString.c_str());
     }
+    SnakeEvent quitEvent{};
+    SnakeEvent eatEvent{};
+    SnakeEvent deathEvent{};
     GLOBAL::MATH::Vector2D MovementDirection{0,-1};
     FoodCell* foodCell;
     SnakeCell* head;

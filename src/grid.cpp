@@ -1,6 +1,6 @@
 #include "Grid.h"
-#include "InputLayer.h"
-#include "WindowLayer.h"
+#include "./layers/InputLayer.h"
+#include "./layers/WindowLayer.h"
 
 Grid::Grid(int m_W, int m_H, int m_cellSize) {
     renderer = WindowLayer::Instance().GetRenderer();

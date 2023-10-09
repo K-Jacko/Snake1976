@@ -1,7 +1,7 @@
 #include "Text.h"
-#include "WindowLayer.h"
-#include "InputLayer.h"
-#include "UILayer.h"
+#include "./layers/WindowLayer.h"
+#include "./layers/InputLayer.h"
+#include "./layers/UILayer.h"
 extern "C"{
     extern const unsigned char Pixeboy_z8XGD_ttf[];
     extern const unsigned int Pixeboy_z8XGD_ttf_len;
@@ -10,7 +10,7 @@ Text::Text(GLOBAL::SCREEN::FONT_SIZE m_fontSize, const char* m_text, SDL_Rect m_
     renderer = WindowLayer::Instance().GetRenderer();
     string = m_text;
     fontSize = m_fontSize;
-    font = TTF_OpenFont("resources/Pixeboy-z8XGD.ttf", fontSize);
+    font = TTF_OpenFont("assets/Pixeboy-z8XGD.ttf", fontSize);
     if (font == nullptr) {
         SDL_Log("Failed to load font: %s", TTF_GetError());
     }
@@ -25,7 +25,7 @@ Text::Text(GLOBAL::UI::TextData textData) {
     renderer = WindowLayer::Instance().GetRenderer();
     string = textData.Text;
     fontSize = textData.FontSize;
-    font = TTF_OpenFont("resources/Pixeboy-z8XGD.ttf", fontSize);
+    font = TTF_OpenFont("assets/Pixeboy-z8XGD.ttf", fontSize);
     if (font == nullptr) {
         SDL_Log("Failed to load font: %s", TTF_GetError());
     }

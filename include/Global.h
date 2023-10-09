@@ -1,6 +1,7 @@
 #pragma once
 #include <SDL.h>
 #include "SDL_ttf.h"
+#include "SDL_mixer.h"
 #include <algorithm>
 #include <iostream>
 #include <vector>
@@ -27,6 +28,18 @@ namespace GLOBAL
             HOVER = 1,
             PRESSED = 2
         };
+
+        struct Scene
+        {
+            Scene() = default;
+            virtual void OnEnter(){}
+            virtual void OnExit(){}
+            virtual void Draw(){}
+            virtual void Update(){}
+            virtual void Init(){}
+            virtual void Refresh(){}
+            bool isInitialized;
+        };
     }
     namespace SCREEN{
         constexpr float CAMERA_FOLLOW_SPEED = 2;
@@ -48,11 +61,6 @@ namespace GLOBAL
             MEDIUM = 150,
             LARGE = 200
         };
-
-//        int ScreenfFlags = SDL_WINDOW_BORDERLESS;
-//        SDL_Color KPRIMARY_COLOR = { 0, 0, 0, 255 };
-//        SDL_Color KSECONDARY_COLOR = { 255, 255, 255, 255 };
-//        constexpr std::chrono::microseconds FRAME_DURATION(16667);
     }
     namespace UI{
         enum ButtonSize{
@@ -68,12 +76,14 @@ namespace GLOBAL
             ButtonSize Size;
         };
         struct TextButtonData{
-            TextButtonData(int x, int y, ButtonSize size, const char* text, GLOBAL::SCREEN::FONT_SIZE fontSize)
-            :XPosition(x),YPosition(y),Size(size),Text(text),FontSize(fontSize){}
+            TextButtonData(int x, int y, ButtonSize size, const char* text, GLOBAL::SCREEN::FONT_SIZE fontSize, int eventCode, const char* soundClipPath)
+            :XPosition(x),YPosition(y),Size(size),Text(text),FontSize(fontSize),EventCode(eventCode),SoundClipPath(soundClipPath){}
             int XPosition, YPosition;
             ButtonSize Size;
             const char* Text;
             SCREEN::FONT_SIZE FontSize;
+            int EventCode;
+            const char* SoundClipPath;
         };
         struct TextData{
             TextData(int x, int y, const char* text, GLOBAL::SCREEN::FONT_SIZE fontSize)
@@ -83,8 +93,12 @@ namespace GLOBAL
             SCREEN::FONT_SIZE FontSize;
         };
     }
+    namespace AUDIO{
+        struct Sound{
+            const char* filePath;
+        };
 
-
+    }
     namespace MATH{
         struct Vector2D
         {
@@ -116,11 +130,8 @@ namespace GLOBAL
                         y = 0;
                         break;
                 }
-
             }
-
             int x, y;
-
             Vector2D& Add(const Vector2D& vec)
             {this->x += vec.x;this->y += vec.y;return *this;}
             Vector2D& Subtract(const Vector2D& vec)
@@ -129,25 +140,20 @@ namespace GLOBAL
             {this->x *= vec.x;this->y *= vec.y;return *this;}
             Vector2D& Divide(const Vector2D& vec)
             {this->x /= vec.x;this->y /= vec.y;return *this;}
-
             friend Vector2D& operator*(Vector2D& v1, const Vector2D& v2){   return  v1.Multiply(v2);    }
             friend Vector2D& operator-(Vector2D& v1, const Vector2D& v2){   return  v1.Subtract(v2);    }
             friend Vector2D& operator+(Vector2D& v1, const Vector2D& v2){   return  v1.Add(v2); }
             friend Vector2D& operator/(Vector2D& v1, const Vector2D& v2){   return  v1.Divide(v2);  }
-
             Vector2D& operator+=(const Vector2D& vec){   return this->Add(vec);  }
             Vector2D& operator-=(const Vector2D& vec){   return this->Subtract(vec); }
             Vector2D& operator*=(const Vector2D& vec){   return this->Multiply(vec); }
             Vector2D& operator/=(const Vector2D& vec){   return this->Divide(vec);   }
             bool operator==(Vector2D& vec){ return (x == vec.x) && (y == vec.y);   }
             Vector2D& operator*=(int i){  *this = *this * i ;return *this;}
-
             Vector2D& operator*(const float& i){this->x *= i; this->y *= i; return *this;}
-
             Vector2D& operator*(const int& i){this->x *= i; this->y *= i; return *this;}
             Vector2D& operator/(const int& i){this->x /= i; this->y /= i; return *this;}
             Vector2D& Zero(){ this->x = 0; this->y = 0; return *this;}
-
             friend std::ostream& operator<<(std::ostream& stream, Vector2D vec){   stream << "(" << vec.x << "x"<< "," << vec.y << "y" << ")";   return stream;  }
         };
     }

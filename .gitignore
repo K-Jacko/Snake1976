@@ -2,3 +2,8 @@
 /cmake-build-release-mingwsdsl/
 /CMakeLists.txt
 
+/cmake-build-debug/
+/cmake-build-release/
+/cmake/
+/cmake/sdl2/
+/cmake/sdl2/FindSDL2.cmake

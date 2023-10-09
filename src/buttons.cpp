@@ -1,20 +1,19 @@
 #include "Buttons.h"
-#include "WindowLayer.h"
-#include "InputLayer.h"
-#include "UILayer.h"
+#include "./layers/WindowLayer.h"
+#include "./layers/InputLayer.h"
+
+SDL_Event EventLayer::event;
 
 Button::Button() {
 
 }
-Button::Button(int m_x, int m_y, GLOBAL::UI::ButtonSize m_size, void(*m_action)()) {
+Button::Button(int m_x, int m_y, GLOBAL::UI::ButtonSize m_size) {
     renderer = WindowLayer::Instance().GetRenderer();
     SetSize(m_size);
     buttonState = GLOBAL::GAME::InteractionStatus::NORMAL;
-    shape = SDL_Rect();
+    shape = SDL_Rect(m_x,m_y,10,10);
     position = SDL_Point() ;
-    isPressed = false;
     isActive = true;
-    action = m_action;
 }
 void Button::Update() {
     if(isActive){
@@ -24,17 +23,13 @@ void Button::Update() {
         if(SDL_PointInRect(&point,&shape)){
             if(InputLayer::Instance().LeftIsPressed()){
                 buttonState = GLOBAL::GAME::InteractionStatus::PRESSED;
-                if(!isPressed){
-                    isPressed = true;
-                    action();
-                }
+                SDL_PushEvent(&buttonEvent);
             }else if(!InputLayer::Instance().LeftIsPressed()){
                 buttonState = GLOBAL::GAME::InteractionStatus::HOVER;
             }
         }
         else if(!SDL_PointInRect(&point,&shape)){
             buttonState = GLOBAL::GAME::InteractionStatus::NORMAL;
-            isPressed = false;
         }
     }
 }
@@ -62,29 +57,23 @@ void Button::SetSize(GLOBAL::UI::ButtonSize m_size) {
     }
 }
 
-void Button::SetAction(void(*m_action)()) {
-    action = m_action;
+void Button::SetupEvent(int userCode) {
+
 }
 
-bool Button::GetActive() {
-    return isActive;
-}
+bool Button::GetActive() {return isActive;}
 
-void Button::SetActive(bool m_active) {
-    isActive = m_active;
-}
+void Button::SetActive(bool m_active) {isActive = m_active;}
 
 TextButton::TextButton() {
     buttonState = GLOBAL::GAME::InteractionStatus::NORMAL;
-    isPressed = false;
     position.y = height = width = position.y = position.x = shape.x = shape.y = shape.w = shape.h = position.x = 0 ;
-    action = nullptr;
+
 }
 TextButton::TextButton(GLOBAL::UI::TextButtonData m_data) {
     renderer = WindowLayer::Instance().GetRenderer();
     TextButton::SetSize(m_data.Size);
     buttonState = GLOBAL::GAME::InteractionStatus::NORMAL;
-    isPressed = false;
     isActive = true;
     position.x = m_data.XPosition - (width/2);
     position.y = m_data.YPosition - (height/2);
@@ -93,6 +82,15 @@ TextButton::TextButton(GLOBAL::UI::TextButtonData m_data) {
     shape.w = width;
     shape.h = height;
     text = new Text(m_data.FontSize,m_data.Text,shape);
+    buttonEvent.type = SDL_USEREVENT;
+    buttonEvent.user.code = m_data.EventCode;
+    soundClip = Mix_LoadWAV(m_data.SoundClipPath);
+    if(soundClip == NULL){
+        std::cout << "ERROR : Audio error" << Mix_GetError() << std::endl;
+    }
+    soundEvent.type = SDL_USEREVENT;
+    soundEvent.user.code = 200;
+    soundEvent.user.data1 = soundClip;
 }
 void TextButton::Update() {
     if(isActive){
@@ -102,17 +100,15 @@ void TextButton::Update() {
         if(SDL_PointInRect(&point,&shape)){
             if(InputLayer::Instance().LeftIsPressed()){
                 buttonState = GLOBAL::GAME::InteractionStatus::PRESSED;
-                if(!isPressed){
-                    isPressed = true;
-                    action();
-                }
+                SDL_PushEvent(&buttonEvent);
+                SDL_PushEvent(&soundEvent);
+
             }else if(!InputLayer::Instance().LeftIsPressed()){
                 buttonState = GLOBAL::GAME::InteractionStatus::HOVER;
             }
         }
         else if(!SDL_PointInRect(&point,&shape)){
             buttonState = GLOBAL::GAME::InteractionStatus::NORMAL;
-            isPressed = false;
         }
         text->UpdateInteraction(buttonState);
     }

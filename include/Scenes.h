@@ -1,20 +1,9 @@
 #pragma once
-#include "SceneManager.h"
 #include "Game.h"
+#include "./snake1976/Snake.h"
+#include "layers/AudioLayer.h"
 
-struct Scene
-{
-    Scene() = default;
-    virtual void OnEnter(){}
-    virtual void OnExit(){}
-    virtual void Draw(){}
-    virtual void Update(){}
-    virtual void Init(){}
-    virtual void Refresh(){}
-    bool isInitialized;
-};
-
-struct MenuScene : public Scene  {
+struct MenuScene : public GLOBAL::GAME::Scene  {
     MenuScene() = default;
     void OnEnter() override{
         if(!isInitialized) {
@@ -22,43 +11,34 @@ struct MenuScene : public Scene  {
         }else {
             UILayer::Instance().GetTextButtons()[0]->SetActive(true);
             UILayer::Instance().GetTextButtons()[1]->SetActive(true);
+            UILayer::Instance().GetTextButtons()[2]->SetActive(true);
             UILayer::Instance().GetText()[0]->SetActive(true);
         }
         GridLayer::Instance().LoadNewGrid(15,20,48);
     }
     void Init() override {
+        SetUpButtons();
+        SetUpTexts();
+        SetUpAudio();
+        isInitialized = true;
+    }
+    void SetUpButtons(){
         std::vector<GLOBAL::UI::TextButtonData> textButtonData;
-        textButtonData.emplace_back(GLOBAL::SCREEN::SCREEN_WIDTH / 2, GLOBAL::SCREEN::SCREEN_HEIGHT * 0.77f, GLOBAL::UI::ButtonSize::Medium , "Start", GLOBAL::SCREEN::FONT_SIZE::MEDIUM);
-        textButtonData.emplace_back(GLOBAL::SCREEN::SCREEN_WIDTH / 2, GLOBAL::SCREEN::SCREEN_HEIGHT * 0.77f + 100, GLOBAL::UI::ButtonSize::Small,"> HighScores", GLOBAL::SCREEN::FONT_SIZE::SMALL);
-        textButtonData.emplace_back(GLOBAL::SCREEN::SCREEN_WIDTH - 25, 25, GLOBAL::UI::ButtonSize::Tiny , "X", GLOBAL::SCREEN::FONT_SIZE::SMALL);
-        textButtonData.emplace_back(25, 25, GLOBAL::UI::ButtonSize::Tiny,"<", GLOBAL::SCREEN::FONT_SIZE::SMALL);
-        textButtonData.emplace_back(GLOBAL::SCREEN::SCREEN_WIDTH / 2, GLOBAL::SCREEN::SCREEN_HEIGHT * 0.77f + 100, GLOBAL::UI::ButtonSize::Small , "> HighScores", GLOBAL::SCREEN::FONT_SIZE::SMALL);
-        textButtonData.emplace_back(GLOBAL::SCREEN::SCREEN_WIDTH / 2, GLOBAL::SCREEN::SCREEN_HEIGHT * 0.95, GLOBAL::UI::ButtonSize::Small , "Retry", GLOBAL::SCREEN::FONT_SIZE::SMALL);
-        UILayer::Instance().CreateTextButtons(textButtonData);
+        textButtonData.emplace_back(GLOBAL::SCREEN::SCREEN_WIDTH / 2, GLOBAL::SCREEN::SCREEN_HEIGHT * 0.77f, GLOBAL::UI::ButtonSize::Medium , "Start", GLOBAL::SCREEN::FONT_SIZE::MEDIUM,0, "assets/audio/menu-start-haptic.wav");
+        textButtonData.emplace_back(GLOBAL::SCREEN::SCREEN_WIDTH / 2, GLOBAL::SCREEN::SCREEN_HEIGHT * 0.77f + 100, GLOBAL::UI::ButtonSize::Small,"> HighScores", GLOBAL::SCREEN::FONT_SIZE::SMALL,1, "assets/audio/menu-haptic.wav");
+        textButtonData.emplace_back(GLOBAL::SCREEN::SCREEN_WIDTH - 25, 25, GLOBAL::UI::ButtonSize::Tiny , "X", GLOBAL::SCREEN::FONT_SIZE::SMALL,101, "assets/audio/menu-haptic.wav");
 
+        UILayer::Instance().CreateTextButtons(textButtonData);
+    }
+    void SetUpTexts(){
         std::vector<GLOBAL::UI::TextData> textData;
         textData.emplace_back(GLOBAL::SCREEN::SCREEN_WIDTH / 2, GLOBAL::SCREEN::SCREEN_HEIGHT * 0.33, "Snake", GLOBAL::SCREEN::FONT_SIZE::LARGE);
-        textData.emplace_back(GLOBAL::SCREEN::SCREEN_WIDTH / 2, GLOBAL::SCREEN::SCREEN_HEIGHT * 0.10, "0", GLOBAL::SCREEN::FONT_SIZE::LARGE);
-        textData.emplace_back(GLOBAL::SCREEN::SCREEN_WIDTH / 2, GLOBAL::SCREEN::SCREEN_HEIGHT * 0.33, "GameOver", GLOBAL::SCREEN::FONT_SIZE::MEDIUM);
         UILayer::Instance().CreateText(textData);
-
-        UILayer::Instance().GetTextButtons()[0]->SetAction(SceneManager::GoToGame);
-        UILayer::Instance().GetTextButtons()[1]->SetAction(SceneManager::GoToHighScore);
-        UILayer::Instance().GetTextButtons()[2]->SetAction(Game::End);
-        UILayer::Instance().GetTextButtons()[3]->SetAction(SceneManager::GoToMenu);
-        UILayer::Instance().GetTextButtons()[4]->SetAction(SceneManager::GoToHighScore);
-        UILayer::Instance().GetTextButtons()[5]->SetAction(SceneManager::GoToGame);
-
-        UILayer::Instance().GetTextButtons()[2]->SetActive(false);
-        UILayer::Instance().GetTextButtons()[3]->SetActive(false);
-        UILayer::Instance().GetTextButtons()[4]->SetActive(false);
-        UILayer::Instance().GetTextButtons()[5]->SetActive(false);
-
-        UILayer::Instance().GetText()[1]->SetActive(false);
-        UILayer::Instance().GetText()[2]->SetActive(false);
-
-
-        isInitialized = true;
+    }
+    void SetUpAudio(){
+        AudioLayer::Instance().GetSoundMixer()->LoadMusic("assets/audio/song.wav");
+        AudioLayer::Instance().GetSoundMixer()->SetMusicVolume(25);
+        AudioLayer::Instance().GetSoundMixer()->PlayMusic(0);
     }
     void Update() override{
         GridLayer::Instance().Update();
@@ -75,13 +55,13 @@ struct MenuScene : public Scene  {
     }
 };
 
-struct GameScene : public Scene {
+struct GameScene : public GLOBAL::GAME::Scene {
     GameScene() = default;
     Snake* snake{};
     void OnEnter() override{
-        Init();
-    }
-    void Init() override{
+        if(!isInitialized){
+            Init();
+        }
         UILayer::Instance().GetTextButtons()[2]->SetActive(true);
         UILayer::Instance().GetTextButtons()[3]->SetActive(true);
         UILayer::Instance().GetText()[1]->SetActive(true);
@@ -91,13 +71,29 @@ struct GameScene : public Scene {
         }else{
             snake->Reset();
         }
-        isInitialized = true;
-
+        AudioLayer::Instance().GetSoundMixer()->StopMusic();
+        AudioLayer::Instance().GetSoundMixer()->PlayMusic(0);
+    }
+    void Init() override{
+        SetUpButtons();
+        SetUpTexts();
         isInitialized = true;
     }
+    void SetUpButtons(){
+        std::vector<GLOBAL::UI::TextButtonData> textButtonData;
+        if(UILayer::Instance().GetTextButtons().size() < 4){
+            textButtonData.emplace_back(25, 25, GLOBAL::UI::ButtonSize::Tiny,"<", GLOBAL::SCREEN::FONT_SIZE::SMALL,2, "assets/audio/menu-haptic.wav");
+        }
+        UILayer::Instance().CreateTextButtons(textButtonData);
+    }
+    void SetUpTexts(){
+        std::vector<GLOBAL::UI::TextData> textData;
+        textData.emplace_back(GLOBAL::SCREEN::SCREEN_WIDTH / 2, GLOBAL::SCREEN::SCREEN_HEIGHT * 0.10, "0", GLOBAL::SCREEN::FONT_SIZE::LARGE);
+        UILayer::Instance().CreateText(textData);
+    }
     void Update() override{
-        GridLayer::Instance().Update();
         snake->Update();
+        GridLayer::Instance().Update();
         UILayer::Instance().Update();
     }
     void Draw() override{
@@ -112,17 +108,30 @@ struct GameScene : public Scene {
     }
 };
 
-struct HighScoreScene : public Scene{
+struct HighScoreScene : public GLOBAL::GAME::Scene{
     HighScoreScene() = default;
     void OnEnter() override{
-        Init();
+        if(!isInitialized){
+            Init();
+        }else{
+            UILayer::Instance().GetTextButtons()[2]->SetActive(true);
+            UILayer::Instance().GetTextButtons()[3]->SetActive(true);
+        }
+        GridLayer::Instance().LoadNewGrid(15,10,48);
     }
     void Init() override{
-        GridLayer::Instance().LoadNewGrid(15,10,48);
+        if(UILayer::Instance().GetTextButtons().size() < 4){
+            SetUpButtons();
+        }
         UILayer::Instance().GetTextButtons()[2]->SetActive(true);
         UILayer::Instance().GetTextButtons()[3]->SetActive(true);
         isInitialized = true;
 
+    }
+    void SetUpButtons(){
+        std::vector<GLOBAL::UI::TextButtonData> textButtonData;
+        textButtonData.emplace_back(25, 25, GLOBAL::UI::ButtonSize::Tiny,"<", GLOBAL::SCREEN::FONT_SIZE::SMALL,2, "assets/audio/menu-haptic.wav");
+        UILayer::Instance().CreateTextButtons(textButtonData);
     }
     void Update() override{
         GridLayer::Instance().Update();
@@ -138,18 +147,43 @@ struct HighScoreScene : public Scene{
     }
 };
 
-struct GameOverScene : public Scene{
+struct GameOverScene : public GLOBAL::GAME::Scene{
     GameOverScene() = default;
 
     void OnEnter() override {
-        Init();
+        if(!isInitialized){
+            Init();
+        }
+        UILayer::Instance().GetTextButtons()[1]->SetActive(true);
+        UILayer::Instance().GetTextButtons()[2]->SetActive(true);
+        UILayer::Instance().GetTextButtons()[3]->SetActive(false);
+        UILayer::Instance().GetTextButtons()[4]->SetActive(true);
+        UILayer::Instance().GetText()[1]->SetActive(true);
+        UILayer::Instance().GetText()[2]->SetActive(true);
+
+        GridLayer::Instance().LoadNewGrid(15,20,48);
     }
 
+    void Init() override {
+        SetUpButtons();
+        SetUpTexts();
+        isInitialized = true;
+    }
+    void SetUpButtons(){
+        std::vector<GLOBAL::UI::TextButtonData> textButtonData;
+        textButtonData.emplace_back(GLOBAL::SCREEN::SCREEN_WIDTH / 2, GLOBAL::SCREEN::SCREEN_HEIGHT * 0.77f, GLOBAL::UI::ButtonSize::Small , "Retry", GLOBAL::SCREEN::FONT_SIZE::SMALL,0, "assets/audio/menu-haptic.wav");
+        UILayer::Instance().CreateTextButtons(textButtonData);
+    }
+    void SetUpTexts(){
+        std::vector<GLOBAL::UI::TextData> textData;
+        textData.emplace_back(GLOBAL::SCREEN::SCREEN_WIDTH / 2, GLOBAL::SCREEN::SCREEN_HEIGHT * 0.33, "GameOver", GLOBAL::SCREEN::FONT_SIZE::MEDIUM);
+        UILayer::Instance().CreateText(textData);
+    }
     void OnExit() override {
+        UILayer::Instance().GetTextButtons()[1]->SetActive(false);
         UILayer::Instance().GetTextButtons()[2]->SetActive(false);
         UILayer::Instance().GetTextButtons()[3]->SetActive(false);
         UILayer::Instance().GetTextButtons()[4]->SetActive(false);
-        UILayer::Instance().GetTextButtons()[5]->SetActive(false);
         UILayer::Instance().GetText()[1]->SetActive(false);
         UILayer::Instance().GetText()[2]->SetActive(false);
     }
@@ -166,17 +200,4 @@ struct GameOverScene : public Scene{
         GridLayer::Instance().Update();
         UILayer::Instance().Update();
     }
-
-    void Init() override {
-        UILayer::Instance().GetTextButtons()[2]->SetActive(true);
-        UILayer::Instance().GetTextButtons()[3]->SetActive(false);
-        UILayer::Instance().GetTextButtons()[4]->SetActive(true);
-        UILayer::Instance().GetTextButtons()[5]->SetActive(true);
-        UILayer::Instance().GetText()[1]->SetActive(true);
-        UILayer::Instance().GetText()[2]->SetActive(true);
-        GridLayer::Instance().LoadNewGrid(15,20,48);
-        isInitialized = true;
-    }
-
-
 };

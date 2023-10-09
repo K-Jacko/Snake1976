@@ -1,12 +1,16 @@
 #include "Game.h"
 #include <iostream>
 #include <SDL.h>
-#include "SDL_image.h"
-#include "SDL_ttf.h"
-#include "SceneManager.h"
 
 bool Game::running;
-SDL_Event Game::event;
+
+GLOBAL::GAME::Scene* SceneLayer::currentScene;
+MenuScene SceneLayer::menuScene;
+GameScene SceneLayer::gameScene;
+HighScoreScene SceneLayer::highScoreScene;
+GameOverScene SceneLayer::gameOverScene;
+
+
 
 Game::Game(){
     running = true;
@@ -14,31 +18,26 @@ Game::Game(){
 Game::~Game() = default;
 
 void Game::Init() {
-    InitMainSystems();
-    InitSubSystems();
-}
-void Game::InitMainSystems() {
-    if(SDL_Init(SDL_INIT_VIDEO) < 0){std::cout << "ERROR" << SDL_GetError() << std::endl;}
-    else{std::cout << "Video Systems :: Initialised!" << std::endl;}
-    if(!IMG_Init(IMG_INIT_PNG)){std::cout << "ERROR" << SDL_GetError() << std::endl;}
-    else{std::cout << "IMG :: Systems Initialised!" << std::endl;}
-    if(TTF_Init() != 0){std::cout << "ERROR" << SDL_GetError() << std::endl;}
-    else{std::cout << "Text :: Systems Initialised!" << std::endl;}
-}
-void Game::InitSubSystems() {
-    WindowLayer::Instance().Init();
-    InputLayer::Instance().Init(&event);
-    SceneManager::Instance().Init();
+    InputLayer::Instance();
+    AudioLayer::Instance();
+    SceneLayer::Instance();
 }
 void Game::Event() {
-    SDL_PollEvent(&event);
-    switch (event.type) {
+    EventLayer::Instance().Poll();
+    switch (EventLayer::Instance().GetEvent().type) {
         case SDL_QUIT:
             End();
             break;
         case SDL_KEYDOWN:
-            switch (event.key.keysym.sym) {
+            switch (EventLayer::Instance().GetEvent().key.keysym.sym) {
                 case SDLK_ESCAPE:
+                    End();
+                    break;
+            }
+            break;
+        case SDL_USEREVENT:
+            switch (EventLayer::Instance().GetEvent().user.code) {
+                case 101:
                     End();
                     break;
             }
@@ -46,11 +45,12 @@ void Game::Event() {
 }
 void Game::Update() {
     InputLayer::Instance().Update();
-    SceneManager::Instance().Update();
+    AudioLayer::Instance().Update();
+    SceneLayer::Instance().Update();
 }
 void Game::Draw() {
     SDL_RenderClear(WindowLayer::Instance().GetRenderer());
-    SceneManager::Instance().Draw();
+    SceneLayer::Instance().Draw();
     SDL_RenderPresent(WindowLayer::Instance().GetRenderer());
 
 }
