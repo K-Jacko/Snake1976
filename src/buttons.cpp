@@ -11,7 +11,7 @@ Button::Button(int m_x, int m_y, GLOBAL::UI::ButtonSize m_size) {
     renderer = WindowLayer::Instance().GetRenderer();
     SetSize(m_size);
     buttonState = GLOBAL::GAME::InteractionStatus::NORMAL;
-    shape = SDL_Rect(m_x,m_y,10,10);
+    shape = {m_x, m_y, 10, 10};
     position = SDL_Point() ;
     isActive = true;
 }

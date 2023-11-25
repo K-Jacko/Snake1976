@@ -51,10 +51,10 @@ public:
 
     }
     void Draw(){
-        GridLayer::Instance().mainGrid->FillCell(GridLayer::Instance().mainGrid->FindCell(cells[0]->position),SDL_Color(255,255,255));
-        GridLayer::Instance().mainGrid->FillCell(GridLayer::Instance().mainGrid->FindCell(foodCell->position), SDL_Color(255,255,255));
+        GridLayer::Instance().mainGrid->FillCell(GridLayer::Instance().mainGrid->FindCell(cells[0]->position),{255,255,255});
+        GridLayer::Instance().mainGrid->FillCell(GridLayer::Instance().mainGrid->FindCell(foodCell->position), {255,255,255});
         for (int i = 1; i < cells.size(); ++i) {
-            GridLayer::Instance().mainGrid->FillCell(GridLayer::Instance().mainGrid->FindCell(cells[i]->position),SDL_Color(200,200,200));
+            GridLayer::Instance().mainGrid->FillCell(GridLayer::Instance().mainGrid->FindCell(cells[i]->position),{200,200,200});
         }
     };
     void Update(){

@@ -190,7 +190,7 @@ struct GameOverScene : public GLOBAL::GAME::Scene{
 
     void Draw() override {
         if(InputLayer::Instance().LeftIsPressed()){
-            GridLayer::Instance().mainGrid->FillCell(GridLayer::Instance().mainGrid->FindCell(GLOBAL::MATH::Vector2D(InputLayer::Instance().GetMousePosition().x,InputLayer::Instance().GetMousePosition().y)),SDL_Color(255,255,255));
+            GridLayer::Instance().mainGrid->FillCell(GridLayer::Instance().mainGrid->FindCell(GLOBAL::MATH::Vector2D(InputLayer::Instance().GetMousePosition().x,InputLayer::Instance().GetMousePosition().y)),{255,255,255});
         }
         GridLayer::Instance().Draw();
         UILayer::Instance().Draw();
